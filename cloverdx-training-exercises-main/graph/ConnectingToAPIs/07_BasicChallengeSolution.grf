@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Graph author="NickTaylor" created="Thu Aug 14 08:51:43 CEST 2025" guiVersion="7.1.0.8" id="1755180806639" licenseCode="CLCDSCLOVE72646208SP" name="fruit" showComponentDetails="true">
+<Global>
+<Metadata id="Metadata0">
+<Record fieldDelimiter="\r\n" name="fruits" previewAttachment="${DATATMP_DIR}/fruits.csv" previewAttachmentCharset="UTF-8" quoteChar="both" quotedStrings="false" skipSourceRows="0" type="delimited">
+<Field name="fruit" type="string"/>
+</Record>
+</Metadata>
+<Metadata id="Metadata1">
+<Record fieldDelimiter="|" name="sugar" previewAttachmentCharset="UTF-8" recordDelimiter="\r\n" type="delimited">
+<Field name="name" type="string"/>
+<Field name="sugar" type="decimal"/>
+</Record>
+</Metadata>
+<GraphParameters>
+<GraphParameterFile fileURL="workspace.prm"/>
+</GraphParameters>
+<Dictionary/>
+</Global>
+<Phase number="0">
+<Node fileURL="${DATAIN_DIR}/ConnectingToAPIs/fruits.csv" guiName="fruits" guiX="270" guiY="200" id="FRUITS" type="FLAT_FILE_READER"/>
+<Node guiName="get fruit data" guiX="445" guiY="200" id="GET_FRUIT_DATA" type="HTTP_CONNECTOR">
+<attr name="inputMapping"><![CDATA[//#CTL2
+
+// Transforms input record into output record.
+function integer transform() {
+	$out.0.URL = "https://www.fruityvice.com/api/fruit/" + $in.0.fruit;
+
+	return ALL;
+}
+
+// Called during component initialization.
+// function boolean init() {}
+
+// Called during each graph run before the transform is executed. May be used to allocate and initialize resources
+// required by the transform. All resources allocated within this method should be released
+// by the postExecute() method.
+// function void preExecute() {}
+
+// Called only if transform() throws an exception.
+// function integer transformOnError(string errorMessage, string stackTrace) {}
+
+// Called during each graph run after the entire transform was executed. Should be used to free any resources
+// allocated within the preExecute() method.
+// function void postExecute() {}
+
+// Called to return a user-defined error message when an error occurs.
+// function string getMessage() {}
+]]></attr>
+</Node>
+<Node guiName="parse fruit data" guiX="845" guiY="200" id="PARSE_FRUIT_DATA" schema="${META_DIR}/fruit_json" sourceUri="port:$0.content:discrete" type="JSON_EXTRACT">
+<attr name="mapping"><![CDATA[<Mappings>
+	<Mapping element="json_object" outPort="0"
+			xmlFields="{}name"
+			cloverFields="name">
+		<Mapping element="nutritions" useParentRecord="true"
+				xmlFields="{}sugar"
+				cloverFields="sugar">
+		</Mapping>
+	</Mapping>
+</Mappings>
+]]></attr>
+</Node>
+<Node guiName="sort by sugar" guiX="1045" guiY="200" id="SORT_BY_SUGAR" sortKey="sugar(d)" type="FAST_SORT"/>
+<Node guiName="status 200?" guiX="645" guiY="200" id="STATUS_200" type="EXT_FILTER">
+<attr name="filterExpression"><![CDATA[//#CTL2
+$in.0.statusCode == 200]]></attr>
+</Node>
+<Node guiName="Trash" guiX="1245" guiY="200" id="TRASH" type="TRASH"/>
+<Node guiName="Trash" guiX="845" guiY="425" id="TRASH1" type="TRASH"/>
+<Edge fromNode="FRUITS:0" guiBendpoints="" guiRouter="Manhattan" id="Edge5" inPort="Port 0 (in)" metadata="Metadata0" outPort="Port 0 (output)" toNode="GET_FRUIT_DATA:0"/>
+<Edge fromNode="GET_FRUIT_DATA:0" guiBendpoints="" guiRouter="Manhattan" id="Edge6" inPort="Port 0 (in)" outPort="Port 0 (out)" toNode="STATUS_200:0"/>
+<Edge fromNode="PARSE_FRUIT_DATA:0" guiBendpoints="" guiRouter="Manhattan" id="Edge8" inPort="Port 0 (in)" metadata="Metadata1" outPort="Port 0 (out)" toNode="SORT_BY_SUGAR:0"/>
+<Edge fromNode="SORT_BY_SUGAR:0" guiBendpoints="" guiRouter="Manhattan" id="Edge9" inPort="Port 0 (in)" outPort="Port 0 (out)" toNode="TRASH:0"/>
+<Edge fromNode="STATUS_200:0" guiBendpoints="" guiRouter="Manhattan" id="Edge7" inPort="Port 0 (input)" outPort="Port 0 (accepted)" toNode="PARSE_FRUIT_DATA:0"/>
+<Edge fromNode="STATUS_200:1" guiBendpoints="" guiRouter="Manhattan" id="Edge10" inPort="Port 0 (in)" outPort="Port 1 (rejected)" toNode="TRASH1:0"/>
+</Phase>
+</Graph>

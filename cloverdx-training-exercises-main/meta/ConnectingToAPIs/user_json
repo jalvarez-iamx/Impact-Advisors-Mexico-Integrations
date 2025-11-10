@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="json_object" type="json_objectType"/>
+  <xs:complexType name="nameType">
+    <xs:sequence>
+      <xs:element type="xs:string" name="title"/>
+      <xs:element type="xs:string" name="first"/>
+      <xs:element type="xs:string" name="last"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="streetType">
+    <xs:sequence>
+      <xs:element type="xs:string" name="number"/>
+      <xs:element type="xs:string" name="name"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="coordinatesType">
+    <xs:sequence>
+      <xs:element type="xs:string" name="latitude"/>
+      <xs:element type="xs:string" name="longitude"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="timezoneType">
+    <xs:sequence>
+      <xs:element type="xs:string" name="offset"/>
+      <xs:element type="xs:string" name="description"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="locationType">
+    <xs:sequence>
+      <xs:element type="streetType" name="street"/>
+      <xs:element type="xs:string" name="city"/>
+      <xs:element type="xs:string" name="state"/>
+      <xs:element type="xs:string" name="country"/>
+      <xs:element type="xs:string" name="postcode"/>
+      <xs:element type="coordinatesType" name="coordinates"/>
+      <xs:element type="timezoneType" name="timezone"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="loginType">
+    <xs:sequence>
+      <xs:element type="xs:string" name="uuid"/>
+      <xs:element type="xs:string" name="username"/>
+      <xs:element type="xs:string" name="password"/>
+      <xs:element type="xs:string" name="salt"/>
+      <xs:element type="xs:string" name="md5"/>
+      <xs:element type="xs:string" name="sha1"/>
+      <xs:element type="xs:string" name="sha256"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="dobType">
+    <xs:sequence>
+      <xs:element type="xs:string" name="date"/>
+      <xs:element type="xs:string" name="age"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="registeredType">
+    <xs:sequence>
+      <xs:element type="xs:string" name="date"/>
+      <xs:element type="xs:string" name="age"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="idType">
+    <xs:sequence>
+      <xs:element type="xs:string" name="name"/>
+      <xs:element type="xs:string" name="value"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="pictureType">
+    <xs:sequence>
+      <xs:element type="xs:string" name="large"/>
+      <xs:element type="xs:string" name="medium"/>
+      <xs:element type="xs:string" name="thumbnail"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="resultsType">
+    <xs:sequence>
+      <xs:element type="xs:string" name="gender"/>
+      <xs:element type="nameType" name="name"/>
+      <xs:element type="locationType" name="location"/>
+      <xs:element type="xs:string" name="email"/>
+      <xs:element type="loginType" name="login"/>
+      <xs:element type="dobType" name="dob"/>
+      <xs:element type="registeredType" name="registered"/>
+      <xs:element type="xs:string" name="phone"/>
+      <xs:element type="xs:string" name="cell"/>
+      <xs:element type="idType" name="id"/>
+      <xs:element type="pictureType" name="picture"/>
+      <xs:element type="xs:string" name="nat"/>
+    </xs:sequence>
+    <xs:attribute type="xs:string" name="arrayElem"/>
+  </xs:complexType>
+  <xs:complexType name="infoType">
+    <xs:sequence>
+      <xs:element type="xs:string" name="seed"/>
+      <xs:element type="xs:string" name="results"/>
+      <xs:element type="xs:string" name="page"/>
+      <xs:element type="xs:string" name="version"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="json_objectType">
+    <xs:sequence>
+      <xs:element type="resultsType" name="results"/>
+      <xs:element type="infoType" name="info"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>

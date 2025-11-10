@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Graph author="droben" created="Tue Jul 01 09:23:29 BST 2025" guiVersion="7.1.0.8" id="1751382182246" licenseCode="CLCDSCLOVE24765514SP" name="test" showComponentDetails="true">
+<Global>
+<Metadata id="Metadata1">
+<Record fieldDelimiter=";" name="customers" recordDelimiter="\n" type="delimited">
+<Field name="id" type="integer"/>
+<Field name="full_name" type="string"/>
+<Field name="street_address" type="string"/>
+<Field name="city" type="string"/>
+<Field name="postal_code" type="string"/>
+<Field name="state" type="string"/>
+<Field name="country" type="string"/>
+<Field name="email" type="string"/>
+<Field name="phone" type="string"/>
+<Field name="account_created" type="string"/>
+<Field name="is_active" type="integer"/>
+</Record>
+</Metadata>
+<Metadata id="Metadata0">
+<Record fieldDelimiter="\t" name="Customers" previewAttachment="${DATAIN_DIR}/Customers.csv" previewAttachmentCharset="UTF-8" quoteChar="both" quotedStrings="false" recordDelimiter="\n" skipSourceRows="1" type="delimited">
+<Field name="id" type="integer"/>
+<Field name="fullName" type="string"/>
+<Field name="streetAddress" type="string"/>
+<Field name="city" type="string"/>
+<Field name="postalCode" type="integer"/>
+<Field name="state" type="string"/>
+<Field name="country" type="string"/>
+<Field name="email" type="string"/>
+<Field name="phone" type="string"/>
+<Field format="yyyy-MM-dd" name="accountCreated" type="date"/>
+<Field eofAsDelimiter="true" name="isActive" type="boolean"/>
+</Record>
+</Metadata>
+<Connection dbConfig="${CONN_DIR}/SQLiteDB.cfg" id="JDBC0" type="JDBC"/>
+<GraphParameters>
+<GraphParameterFile fileURL="workspace.prm"/>
+</GraphParameters>
+<Dictionary/>
+</Global>
+<Phase number="0">
+<Node dbConnection="JDBC0" guiName="DBExecute" guiX="145" guiY="0" id="DBEXECUTE" type="DB_EXECUTE">
+<attr name="sqlQuery"><![CDATA[-- Delete all rows if the table exists
+DELETE FROM customers
+WHERE EXISTS (
+    SELECT name
+    FROM sqlite_master
+    WHERE type = 'table' AND name = 'customers'
+);
+]]></attr>
+</Node>
+</Phase>
+<Phase number="1">
+<Node fileURL="${DATAIN_DIR}/Customers.csv" guiName="Read customers" guiX="145" guiY="150" id="READ_CUSTOMERS" type="FLAT_FILE_READER"/>
+<Node batchMode="true" batchSize="5000" commit="5000" dbConnection="JDBC0" dbTable="customers" guiName="Write customers to database" guiX="345" guiY="150" id="WRITE_CUSTOMERS_TO_DATABASE" type="DB_OUTPUT_TABLE"/>
+<Edge fromNode="READ_CUSTOMERS:0" guiBendpoints="" guiRouter="Manhattan" id="Edge0" inPort="Port 0 (in)" metadata="Metadata0" outPort="Port 0 (output)" toNode="WRITE_CUSTOMERS_TO_DATABASE:0"/>
+</Phase>
+<Phase number="2">
+<Node dbConnection="JDBC0" fetchSize="5000" guiName="DatabaseReader" guiX="145" guiY="325" id="DATABASE_READER" type="DB_INPUT_TABLE">
+<attr name="sqlQuery"><![CDATA[select * from customers]]></attr>
+</Node>
+<Node guiName="Success" guiX="345" guiY="325" id="SUCCESS" type="SUCCESS"/>
+<Edge fromNode="DATABASE_READER:0" guiBendpoints="" guiRouter="Manhattan" id="Edge2" inPort="Port 0 (in)" metadata="Metadata1" outPort="Port 0 (out)" toNode="SUCCESS:0"/>
+</Phase>
+</Graph>

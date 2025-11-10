@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Graph author="NickTaylor" created="Thu Aug 07 08:45:20 CEST 2025" guiVersion="7.1.0.8" id="1754561773760" licenseCode="CLCDSCLOVE72646208SP" name="users" showComponentDetails="true">
+<Global>
+<Metadata id="Metadata6">
+<Record fieldDelimiter="|" name="HTTPConnector_Response" recordDelimiter="\n" type="delimited">
+<Field name="content" type="string"/>
+<Field name="contentByte" type="byte"/>
+<Field name="outputFilePath" type="string"/>
+<Field name="statusCode" trim="true" type="integer"/>
+<Field containerType="map" name="header" type="string"/>
+<Field containerType="list" name="rawHeaders" type="string"/>
+<Field name="errorMessage" type="string"/>
+<Field eofAsDelimiter="true" name="userID" type="string"/>
+</Record>
+</Metadata>
+<Metadata id="Metadata0">
+<Record fieldDelimiter="|" name="userData" previewAttachmentCharset="UTF-8" recordDelimiter="\r\n" type="delimited">
+<Field name="latitude" type="string"/>
+<Field name="longitude" type="string"/>
+<Field name="username" type="string"/>
+<Field name="birthdate" type="string"/>
+<Field name="nat" type="string"/>
+<Field name="gender" type="string"/>
+<Field name="coordinatesContent" type="variant"/>
+</Record>
+</Metadata>
+<Metadata id="Metadata4">
+<Record fieldDelimiter="|" name="userData" previewAttachmentCharset="UTF-8" recordDelimiter="\r\n" type="delimited">
+<Field name="gender" type="string"/>
+<Field name="nat" type="string"/>
+<Field name="email" type="string"/>
+<Field name="birthDate" type="string"/>
+<Field name="registerDate" type="string"/>
+<Field name="latitude" type="string"/>
+<Field name="longitude" type="string"/>
+</Record>
+</Metadata>
+<Metadata id="Metadata2">
+<Record fieldDelimiter="|" name="userID" recordDelimiter="\r\n" type="delimited">
+<Field name="userID" type="string"/>
+</Record>
+</Metadata>
+<Metadata id="Metadata5">
+<Record eofAsDelimiter="true" fieldDelimiter="\r\n" name="userIDs" previewAttachment="${DATAIN_DIR}/userIDs.csv" previewAttachmentCharset="UTF-8" quoteChar="both" quotedStrings="false" skipSourceRows="0" type="delimited">
+<Field name="userID" type="string"/>
+</Record>
+</Metadata>
+<Metadata id="Metadata8" previewAttachment="./data-in/userIDs.csv" previewAttachmentCharset="UTF-8">
+<Record eofAsDelimiter="true" fieldDelimiter="\r\n" name="userIDs1" previewAttachment="./data-in/userIDs.csv" previewAttachmentCharset="UTF-8" type="delimited">
+<Field eofAsDelimiter="true" name="userID" type="string"/>
+</Record>
+</Metadata>
+<Metadata id="Metadata7">
+<Record eofAsDelimiter="true" fieldDelimiter="\r\n" name="userIDSeed" previewAttachment="${DATAIN_DIR}/userIDs.csv" previewAttachmentCharset="UTF-8" quoteChar="both" quotedStrings="false" skipSourceRows="0" type="delimited">
+<Field name="seed" type="string"/>
+</Record>
+</Metadata>
+<GraphParameters>
+<GraphParameterFile fileURL="workspace.prm"/>
+</GraphParameters>
+<Sequence cached="1000" id="Sequence0" name="count" start="1" step="1" type="PRIMITIVE_SEQUENCE"/>
+<Dictionary/>
+</Global>
+<Phase number="0">
+<Node guiName="Get User Data" guiX="120" guiY="150" id="GET_USER_DATA" type="HTTP_CONNECTOR" url="https://randomuser.me/api">
+<attr name="requestParameters"><![CDATA[
+]]></attr>
+</Node>
+<Node guiName="Parse User Data" guiX="320" guiY="150" id="PARSE_USER_DATA" schema="${META_DIR}/user_json" sourceUri="port:$0.content:discrete" type="JSON_EXTRACT" useNestedNodes="false">
+<attr name="mapping"><![CDATA[<Mappings>
+	<Mapping element="json_object">
+		<Mapping element="results" outPort="0"
+				xmlFields="{}email;{}gender;{}nat"
+				cloverFields="email;gender;nat">
+			<Mapping element="location" useParentRecord="true">
+				<Mapping element="coordinates" useParentRecord="true"
+						xmlFields="{}latitude;{}longitude"
+						cloverFields="latitude;longitude">
+				</Mapping>
+			</Mapping>
+			<Mapping element="dob" useParentRecord="true"
+					xmlFields="{}date"
+					cloverFields="birthDate">
+			</Mapping>
+			<Mapping element="registered" useParentRecord="true"
+					xmlFields="{}date"
+					cloverFields="registerDate">
+			</Mapping>
+		</Mapping>
+	</Mapping>
+</Mappings>
+]]></attr>
+</Node>
+<Node guiName="Trash" guiX="520" guiY="150" id="TRASH1" type="TRASH"/>
+<Edge fromNode="GET_USER_DATA:0" guiBendpoints="" guiRouter="Manhattan" id="Edge4" inPort="Port 0 (input)" outPort="Port 0 (out)" toNode="PARSE_USER_DATA:0"/>
+<Edge fromNode="PARSE_USER_DATA:0" guiBendpoints="" guiRouter="Manhattan" id="Edge1" inPort="Port 0 (in)" metadata="Metadata4" outPort="Port 0 (out)" toNode="TRASH1:0"/>
+</Phase>
+</Graph>

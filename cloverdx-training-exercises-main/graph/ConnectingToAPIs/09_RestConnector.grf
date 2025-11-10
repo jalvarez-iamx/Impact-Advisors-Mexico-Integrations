@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Graph author="NickTaylor" created="Wed Jun 25 08:33:56 CEST 2025" guiVersion="7.1.0.8" id="1750836786639" licenseCode="CLCDSCLOVE72646208SP" name="new-graph" showComponentDetails="true">
+<Global>
+<Metadata id="Metadata2">
+<Record fieldDelimiter="|" name="countries" previewAttachmentCharset="UTF-8" recordDelimiter="\r\n" type="delimited">
+<Field name="common" type="string"/>
+<Field name="official" type="string"/>
+<Field name="ccn3" type="string"/>
+<Field containerType="list" name="capital" type="string"/>
+<Field name="region" type="string"/>
+<Field name="subregion" type="string"/>
+<Field name="population" type="string"/>
+</Record>
+</Metadata>
+<Metadata id="Metadata3">
+<Record eofAsDelimiter="true" fieldDelimiter="\r\n" name="countryNames" previewAttachment="${DATATMP_DIR}/sampleCountries.csv" previewAttachmentCharset="UTF-8" quoteChar="both" quotedStrings="false" skipSourceRows="0" type="delimited">
+<Field name="name" type="string"/>
+</Record>
+</Metadata>
+<Metadata id="Metadata0">
+<Record fieldDelimiter="|" name="errors" recordDelimiter="\n" type="delimited">
+<Field name="content" type="string"/>
+<Field name="contentByte" type="byte"/>
+<Field name="contentJson" type="variant"/>
+<Field name="statusCode" trim="true" type="integer"/>
+<Field containerType="map" name="responseHeaders" type="string"/>
+<Field name="errorMessage" type="string"/>
+<Field eofAsDelimiter="true" name="name" type="string"/>
+</Record>
+</Metadata>
+<GraphParameters>
+<GraphParameterFile fileURL="workspace.prm"/>
+</GraphParameters>
+<Sequence cached="1000" id="Sequence0" name="page" start="0" step="1" type="PRIMITIVE_SEQUENCE"/>
+<Dictionary/>
+</Global>
+<Phase number="0">
+<Node fileURL="${DATAIN_DIR}/ConnectingToAPIs/countries.csv" guiName="countries" guiX="120" guiY="175" id="COUNTRIES" type="FLAT_FILE_READER"/>
+<Node apiRootUrl="https://restcountries.com/v3.1" endpoint="/name/{name}" guiName="get country data" guiX="395" guiY="175" headerProperties="Accept=*/*&#13;&#10;" id="GET_COUNTRY_DATA" openApiUrl="${DATAIN_DIR}/restCountriesOPENAPI.yaml" requestMethod="GET" requestParameters="fullText=&#10;name=france&#10;" type="REST_CONNECTOR">
+<attr name="defaultOutputMapping"><![CDATA[//#CTL2
+
+// Transforms input record into output record.
+function integer transform() {
+	$out.1.content = $in.0.content;
+	$out.1.contentByte = $in.0.contentByte;
+	$out.1.contentJson = $in.0.contentJson;
+	$out.1.statusCode = $in.0.statusCode;
+	$out.1.responseHeaders = $in.0.responseHeaders;
+	$out.1.errorMessage = $in.0.errorMessage;
+	$out.1.name = $in.2.name;
+
+	return ALL;
+}
+
+// Called during component initialization.
+// function boolean init() {}
+
+// Called during each graph run before the transform is executed. May be used to allocate and initialize resources
+// required by the transform. All resources allocated within this method should be released
+// by the postExecute() method.
+// function void preExecute() {}
+
+// Called only if transform() throws an exception.
+// function integer transformOnError(string errorMessage, string stackTrace) {}
+
+// Called during each graph run after the entire transform was executed. Should be used to free any resources
+// allocated within the preExecute() method.
+// function void postExecute() {}
+
+// Called to return a user-defined error message when an error occurs.
+// function string getMessage() {}
+]]></attr>
+<attr name="inputMapping"><![CDATA[//#CTL2
+
+// Transforms input record into output record.
+function integer transform() {
+	$out.2.name = $in.0.name;
+
+	return ALL;
+}
+
+// Called during component initialization.
+// function boolean init() {}
+
+// Called during each graph run before the transform is executed. May be used to allocate and initialize resources
+// required by the transform. All resources allocated within this method should be released
+// by the postExecute() method.
+// function void preExecute() {}
+
+// Called only if transform() throws an exception.
+// function integer transformOnError(string errorMessage, string stackTrace) {}
+
+// Called during each graph run after the entire transform was executed. Should be used to free any resources
+// allocated within the preExecute() method.
+// function void postExecute() {}
+
+// Called to return a user-defined error message when an error occurs.
+// function string getMessage() {}
+]]></attr>
+<attr name="responseMapping"><![CDATA[<Mappings>
+	<Mapping element="HTTP_200" responsesKey="200">
+		<Mapping element="body_json" outPort="0"
+				xmlFields="{}capital;{}ccn3;{}population;{}region;{}subregion"
+				cloverFields="capital;ccn3;population;region;subregion">
+			<Mapping element="name" useParentRecord="true"
+					xmlFields="{}common;{}official"
+					cloverFields="common;official">
+			</Mapping>
+		</Mapping>
+	</Mapping>
+</Mappings>
+]]></attr>
+</Node>
+<Node guiName="Trash" guiX="820" guiY="175" id="TRASH" type="TRASH"/>
+<Node guiName="Trash" guiX="820" guiY="375" id="TRASH1" type="TRASH"/>
+<Edge fromNode="COUNTRIES:0" guiBendpoints="" guiRouter="Manhattan" id="Edge6" inPort="Port 0 (in)" metadata="Metadata3" outPort="Port 0 (output)" toNode="GET_COUNTRY_DATA:0"/>
+<Edge fromNode="GET_COUNTRY_DATA:0" guiBendpoints="" guiRouter="Manhattan" id="Edge4" inPort="Port 0 (in)" metadata="Metadata2" outPort="Port 0 (out)" toNode="TRASH:0"/>
+<Edge fromNode="GET_COUNTRY_DATA:1" guiBendpoints="" guiRouter="Manhattan" id="Edge7" inPort="Port 0 (in)" metadata="Metadata0" outPort="Port 1 (out)" toNode="TRASH1:0"/>
+</Phase>
+</Graph>

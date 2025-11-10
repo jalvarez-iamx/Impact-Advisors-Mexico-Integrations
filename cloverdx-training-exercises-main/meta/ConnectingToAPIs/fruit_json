@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="json_object" type="json_objectType"/>
+  <xs:complexType name="nutritionsType">
+    <xs:sequence>
+      <xs:element type="xs:string" name="calories"/>
+      <xs:element type="xs:string" name="fat"/>
+      <xs:element type="xs:string" name="sugar"/>
+      <xs:element type="xs:string" name="carbohydrates"/>
+      <xs:element type="xs:string" name="protein"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="json_objectType">
+    <xs:sequence>
+      <xs:element type="xs:string" name="name"/>
+      <xs:element type="xs:string" name="id"/>
+      <xs:element type="xs:string" name="family"/>
+      <xs:element type="xs:string" name="order"/>
+      <xs:element type="xs:string" name="genus"/>
+      <xs:element type="nutritionsType" name="nutritions"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>

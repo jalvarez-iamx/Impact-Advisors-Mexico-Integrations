@@ -1,0 +1,127 @@
+openapi: 3.0.0
+info:
+  title: REST Countries API
+  description: Provides information about countries, including their names, capitals, populations, currencies, languages, timezones, and more.
+  version: 1.0.0
+servers:
+  - url: https://restcountries.com/v3.1
+paths:
+  /all:
+    get:
+      summary: Retrieve information about all countries
+      responses:
+        '200':
+          description: A list of all countries
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Country'
+  /name/{name}:
+    get:
+      summary: Search for countries by name
+      parameters:
+        - name: name
+          in: path
+          required: true
+          description: The name of the country (native or partial name)
+          schema:
+            type: string
+        - name: fullText
+          in: query
+          required: false
+          description: Return only exact matches when true
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: A list of countries matching the search criteria
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Country'
+  /alpha/{code}:
+    get:
+      summary: Search for a country by ISO 3166-1 code
+      parameters:
+        - name: code
+          in: path
+          required: true
+          description: The 2-letter or 3-letter ISO 3166-1 country code
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The country matching the ISO code
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Country'
+components:
+  schemas:
+    Country:
+      type: object
+      properties:
+        name:
+          type: object
+          properties:
+            common:
+              type: string
+            official:
+              type: string
+            nativeName:
+              type: object
+              additionalProperties:
+                type: object
+                properties:
+                  official:
+                    type: string
+                  common:
+                    type: string
+        cca2:
+          type: string
+        cca3:
+          type: string
+        ccn3:
+          type: string
+        cioc:
+          type: string
+        capital:
+          type: array
+          items:
+            type: string
+        region:
+          type: string
+        subregion:
+          type: string
+        population:
+          type: integer
+        languages:
+          type: object
+          additionalProperties:
+            type: string
+        currencies:
+          type: object
+          additionalProperties:
+            type: object
+            properties:
+              name:
+                type: string
+              symbol:
+                type: string
+        flags:
+          type: object
+          properties:
+            png:
+              type: string
+              format: uri
+            svg:
+              type: string
+              format: uri
+        timezones:
+          type: array
+          items:
+            type: string

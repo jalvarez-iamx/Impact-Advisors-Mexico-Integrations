@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Graph author="NickTaylor" created="Fri Aug 15 08:46:40 CEST 2025" guiVersion="7.1.0.8" id="1755254933382" licenseCode="CLCDSCLOVE72646208SP" name="authentication" showComponentDetails="true">
+<Global>
+<Metadata id="Metadata0">
+<Record fieldDelimiter="\r\n" name="animals" recordDelimiter="\r\n" type="delimited">
+<Field name="name" type="string"/>
+</Record>
+</Metadata>
+<GraphParameters>
+<GraphParameter name="API_KEY" secure="false"/>
+<GraphParameterFile fileURL="workspace.prm"/>
+</GraphParameters>
+<RichTextNote backgroundColor="FAF6D6" folded="false" fontSize="medium" height="500" id="Note0" textColor="444444" width="1025" x="100" y="75">
+<attr name="text"><![CDATA[h3. To try this yourself, get a free API key at [https://api-ninjas.com/api/animals]]]></attr>
+</RichTextNote>
+<Dictionary/>
+</Global>
+<Phase number="0">
+<Node fileURL="${DATAIN_DIR}/animals.csv" guiName="animal names" guiX="120" guiY="175" id="ANIMAL_NAMES" type="FLAT_FILE_READER"/>
+<Node addInputFieldsAsParameters="true" guiName="get animal data" guiX="320" guiY="175" id="GET_ANIMAL_DATA" type="HTTP_CONNECTOR" url="https://api.api-ninjas.com/v1/animals">
+<attr name="headerProperties"><![CDATA[X-Api-Key=${API_KEY}
+]]></attr>
+<attr name="requestParameters"><![CDATA[
+]]></attr>
+</Node>
+<Node guiName="status code 200?" guiX="495" guiY="175" id="STATUS_CODE_200" type="EXT_FILTER">
+<attr name="filterExpression"><![CDATA[//#CTL2
+$in.0.statusCode == 200]]></attr>
+</Node>
+<Node guiName="Trash" guiX="820" guiY="175" id="TRASH" type="TRASH"/>
+<Node guiName="Trash" guiX="820" guiY="400" id="TRASH1" type="TRASH"/>
+<Edge fromNode="ANIMAL_NAMES:0" guiBendpoints="" guiRouter="Manhattan" id="Edge0" inPort="Port 0 (in)" metadata="Metadata0" outPort="Port 0 (output)" toNode="GET_ANIMAL_DATA:0"/>
+<Edge fromNode="GET_ANIMAL_DATA:0" guiBendpoints="" guiRouter="Manhattan" id="Edge1" inPort="Port 0 (in)" outPort="Port 0 (out)" toNode="STATUS_CODE_200:0"/>
+<Edge fromNode="STATUS_CODE_200:0" guiBendpoints="" guiRouter="Manhattan" id="Edge4" inPort="Port 0 (in)" outPort="Port 0 (accepted)" toNode="TRASH:0"/>
+<Edge fromNode="STATUS_CODE_200:1" guiBendpoints="" guiRouter="Manhattan" id="Edge5" inPort="Port 0 (in)" outPort="Port 1 (rejected)" toNode="TRASH1:0"/>
+</Phase>
+</Graph>

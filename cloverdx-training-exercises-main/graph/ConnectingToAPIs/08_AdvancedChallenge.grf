@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Graph author="NickTaylor" created="Fri Aug 15 08:46:40 CEST 2025" guiVersion="7.1.0.8" id="1755263765695" licenseCode="CLCDSCLOVE72646208SP" name="advanced" showComponentDetails="true">
+<Global>
+<Metadata id="Metadata0">
+<Record fieldDelimiter="|" name="latLon" recordDelimiter="\r\n" type="delimited">
+<Field name="lat" type="string"/>
+<Field name="lon" type="string"/>
+</Record>
+</Metadata>
+<Metadata id="Metadata1">
+<Record fieldDelimiter="|" name="sunset" previewAttachmentCharset="UTF-8" recordDelimiter="\r\n" type="delimited">
+<Field format="HH:mm:ss" name="sunset" type="string"/>
+</Record>
+</Metadata>
+<GraphParameters>
+<GraphParameterFile fileURL="workspace.prm"/>
+</GraphParameters>
+<Dictionary/>
+</Global>
+<Phase number="0">
+<Node guiName="get IP data" guiX="270" guiY="175" id="GET_IP_DATA" type="HTTP_CONNECTOR" url="http://ip-api.com/json"/>
+<Node guiName="get sunset data" guiX="695" guiY="175" id="GET_SUNSET_DATA" type="HTTP_CONNECTOR" url="https://api.sunrisesunset.io/json">
+<attr name="inputMapping"><![CDATA[//#CTL2
+
+// Transforms input record into output record.
+function integer transform() {
+	$out.3.lat = $in.0.lat;
+	$out.3.lng = $in.0.lon;
+
+	return ALL;
+}
+
+// Called during component initialization.
+// function boolean init() {}
+
+// Called during each graph run before the transform is executed. May be used to allocate and initialize resources
+// required by the transform. All resources allocated within this method should be released
+// by the postExecute() method.
+// function void preExecute() {}
+
+// Called only if transform() throws an exception.
+// function integer transformOnError(string errorMessage, string stackTrace) {}
+
+// Called during each graph run after the entire transform was executed. Should be used to free any resources
+// allocated within the preExecute() method.
+// function void postExecute() {}
+
+// Called to return a user-defined error message when an error occurs.
+// function string getMessage() {}
+]]></attr>
+<attr name="requestParameters"><![CDATA[lat=
+lng=
+]]></attr>
+</Node>
+<Node guiName="parse IP data" guiX="495" guiY="175" id="PARSE_IP_DATA" schema="${META_DIR}/ipInfo_json" sourceUri="port:$0.content:discrete" type="JSON_EXTRACT">
+<attr name="mapping"><![CDATA[<Mappings>
+	<Mapping element="json_object" outPort="0"
+			xmlFields="{}lat;{}lon"
+			cloverFields="lat;lon">
+	</Mapping>
+</Mappings>
+]]></attr>
+</Node>
+<Node guiName="parse sunset data" guiX="895" guiY="175" id="PARSE_SUNSET_DATA" schema="${META_DIR}/sunset_json" sourceUri="port:$0.content:discrete" type="JSON_EXTRACT">
+<attr name="mapping"><![CDATA[<Mappings>
+	<Mapping element="json_object">
+		<Mapping element="results" outPort="0"
+				xmlFields="{}sunset"
+				cloverFields="sunset">
+		</Mapping>
+	</Mapping>
+</Mappings>
+]]></attr>
+</Node>
+<Node guiName="Trash" guiX="1145" guiY="175" id="TRASH" type="TRASH"/>
+<Edge fromNode="GET_IP_DATA:0" guiBendpoints="" guiRouter="Manhattan" id="Edge1" inPort="Port 0 (input)" outPort="Port 0 (out)" toNode="PARSE_IP_DATA:0"/>
+<Edge fromNode="GET_SUNSET_DATA:0" guiBendpoints="" guiRouter="Manhattan" id="Edge2" inPort="Port 0 (input)" outPort="Port 0 (out)" toNode="PARSE_SUNSET_DATA:0"/>
+<Edge fromNode="PARSE_IP_DATA:0" guiBendpoints="" guiRouter="Manhattan" id="Edge0" inPort="Port 0 (in)" metadata="Metadata0" outPort="Port 0 (out)" toNode="GET_SUNSET_DATA:0"/>
+<Edge fromNode="PARSE_SUNSET_DATA:0" guiBendpoints="" guiRouter="Manhattan" id="Edge3" inPort="Port 0 (in)" metadata="Metadata1" outPort="Port 0 (out)" toNode="TRASH:0"/>
+</Phase>
+</Graph>

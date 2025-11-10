@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Graph author="NickTaylor" created="Thu Aug 07 08:45:20 CEST 2025" guiVersion="7.1.0.8" id="1754561773760" licenseCode="CLCDSCLOVE72646208SP" name="users" showComponentDetails="true">
+<Global>
+<GraphParameters>
+<GraphParameterFile fileURL="workspace.prm"/>
+</GraphParameters>
+<Sequence cached="1000" id="Sequence0" name="count" start="1" step="1" type="PRIMITIVE_SEQUENCE"/>
+<Dictionary/>
+</Global>
+<Phase number="0">
+<Node guiName="Get User Data" guiX="295" guiY="125" id="GET_USER_DATA" type="HTTP_CONNECTOR" url="https://randomuser.me/api">
+<attr name="requestParameters"><![CDATA[
+]]></attr>
+</Node>
+<Node guiName="Trash" guiX="545" guiY="125" id="TRASH" type="TRASH"/>
+<Edge fromNode="GET_USER_DATA:0" guiBendpoints="" guiRouter="Manhattan" id="Edge0" inPort="Port 0 (in)" outPort="Port 0 (out)" toNode="TRASH:0"/>
+</Phase>
+</Graph>

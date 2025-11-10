@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Graph author="NickTaylor" created="Fri Aug 15 08:46:40 CEST 2025" guiVersion="7.1.0.8" id="1755263765695" licenseCode="CLCDSCLOVE72646208SP" name="advanced" showComponentDetails="true">
+<Global>
+<Metadata id="Metadata0">
+<Record fieldDelimiter="|" name="latLon" recordDelimiter="\r\n" type="delimited">
+<Field name="lat" type="string"/>
+<Field name="lon" type="string"/>
+</Record>
+</Metadata>
+<Metadata id="Metadata1">
+<Record fieldDelimiter="|" name="sunset" previewAttachmentCharset="UTF-8" recordDelimiter="\r\n" type="delimited">
+<Field format="HH:mm:ss" name="sunset" type="string"/>
+</Record>
+</Metadata>
+<GraphParameters>
+<GraphParameterFile fileURL="workspace.prm"/>
+</GraphParameters>
+<RichTextNote backgroundColor="FAF6D6" folded="false" fontSize="large" height="101" id="Note0" textColor="444444" width="676" x="200" y="125">
+<attr name="text"><![CDATA[h3. Use these two APIs to discover what time sunset is for you today]]></attr>
+</RichTextNote>
+<RichTextNote backgroundColor="FAF6D6" folded="false" fontSize="large" height="176" id="Note1" textColor="444444" width="251" x="200" y="250">
+<attr name="text"><![CDATA[h4. to get your location from your IP address
+
+
+http://ip-api.com/json ]]></attr>
+</RichTextNote>
+<RichTextNote backgroundColor="FAF6D6" folded="false" fontSize="large" height="250" id="Note2" textColor="444444" width="275" x="575" y="250">
+<attr name="text"><![CDATA[h4. to get sunset from your location data
+
+
+https://api.sunrisesunset.io/json 
+with query parameters 
+lat = latitude
+lng = longitude]]></attr>
+</RichTextNote>
+<Dictionary/>
+</Global>
+</Graph>

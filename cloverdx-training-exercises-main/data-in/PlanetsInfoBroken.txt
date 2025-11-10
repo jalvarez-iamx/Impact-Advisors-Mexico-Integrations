@@ -1,0 +1,9 @@
+Name|Radius (km)|Distance from Sun (mil km)|Orbital period (days)
+Mercury|2439.7.|57.909|87.97
+Venus|6051.8|108.208|224.7
+Earth|6371|149.598
+Mars|3389.5|227.94|686.97
+Jupiter|69911|778.299|4332.59
+Saturn|58232||1429.39|10759.22
+Uranus|25362|2875.04|30688.5
+Neptune|24622|4504.45|60182
