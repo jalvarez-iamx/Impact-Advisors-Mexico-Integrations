@@ -1,41 +1,53 @@
-# Workday Transformation Utilities
+# IAMX Repository
 
-A comprehensive Java utility library for transforming healthcare ERP data to Workday format. Designed for junior integration engineers with copy-paste friendly functions.
+A comprehensive platform for healthcare data integration and transformation to Workday format. Designed for managing multiple clinic and hospital projects with shared utilities and training resources.
 
 ## Repository Structure
 
 ```
-workday-transformations/
-├── common/                    # Shared utilities
-│   ├── DataValidationUtils.java
-│   ├── DateFormatterUtils.java
-│   ├── StringManipulationUtils.java
-│   ├── ErrorHandlingUtils.java
-│   └── NumberFormattingUtils.java
-├── hr/                        # Human Resources transformations
-│   ├── employee/             # Employee data transformations
-│   │   ├── EmployeeIdTransformer.java
-│   │   ├── NameParser.java
-│   │   ├── AddressStandardizer.java
-│   │   ├── ContactInfoValidator.java
-│   │   ├── EmploymentStatusMapper.java
-│   │   ├── HireDateConverter.java
-│   │   └── DemographicDataHandler.java
-│   ├── position/             # Position data transformations
-│   ├── benefits/             # Benefits data transformations
-│   └── compliance/           # Compliance data transformations
-├── finance/                   # Financial data transformations
-├── payroll/                   # Payroll data transformations
-└── README.md
+iamx-repository/
+├── global-tools/              # Shared utilities and frameworks
+│   ├── java-utilities/       # Java utility library
+│   ├── cloverdx-shared/      # Shared CloverDX components
+│   └── docs/                 # Global documentation
+├── projects/                 # Clinic/hospital-specific projects
+│   ├── clinic-template/      # Template for new clinics
+│   ├── hospital-a/           # Hospital A project
+│   ├── hospital-b/           # Hospital B project
+│   ├── clinic-x/             # Clinic X project
+│   └── specialty-center/     # Specialty Center project
+├── training/                 # Educational resources
+│   └── cloverdx-exercises/   # CloverDX training materials
+├── scripts/                  # Build and deployment scripts
+└── docs/                     # Repository-level documentation
 ```
 
 ## Quick Start
 
-### 1. Add to Your CloverDX Project
+### For New Clinic Projects
 
-Copy the required utility classes directly into your CloverDX Java components.
+1. **Copy the clinic template**:
+   ```bash
+   cp -r projects/clinic-template projects/your-clinic-name
+   ```
 
-### 2. Common Usage Patterns
+2. **Set up your CloverDX workspace** in the new clinic directory
+
+3. **Leverage global tools** from `global-tools/java-utilities/`
+
+### For Development
+
+1. **Build Java utilities**:
+   ```bash
+   cd global-tools/java-utilities
+   mvn clean package
+   ```
+
+2. **Import CloverDX exercises** from `training/cloverdx-exercises/`
+
+3. **Use shared components** from `global-tools/cloverdx-shared/`
+
+### Common Usage Patterns
 
 #### Employee ID Transformation
 ```java
@@ -87,81 +99,100 @@ String workdayStatus = EmploymentStatusMapper.mapEmploymentStatus(legacyStatus);
 // Result: "Active"
 ```
 
-## Module Documentation
+## Key Components
 
-### Common Utilities
+### Global Tools (`global-tools/`)
 
-#### DataValidationUtils
-- Email validation
-- Phone number validation
-- SSN validation
-- Date validation
-- Address validation
+#### Java Utilities
+A comprehensive library with modules for:
+- **Common Utilities**: Data validation, date formatting, string manipulation, error handling, number formatting
+- **HR Module**: Employee, position, benefits, and compliance transformations
+- **Finance Module**: GL accounts, transactions, budgets, healthcare finance
+- **Payroll Module**: Compensation, deductions, taxes, benefits integration
+- **Supply Chain**: Inventory, logistics, procurement, supplier management
+- **Manufacturing**: Production, quality, maintenance, cost accounting
 
-#### DateFormatterUtils
-- Multiple date format conversion
-- Age calculation
-- Service year calculation
-- Date arithmetic
+#### CloverDX Shared Components
+Reusable ETL components, graphs, and job templates that can be shared across clinic projects.
 
-#### StringManipulationUtils
-- Whitespace normalization
-- Case conversion
-- Special character removal
-- Address prefix removal
+### Projects (`projects/`)
 
-#### ErrorHandlingUtils
-- Safe execution with fallbacks
-- Data quality warnings
-- Transformation error logging
+Each clinic/hospital project contains:
+- **CloverDX Workspace**: ETL processes specific to the clinic
+- **Custom Transformations**: Clinic-specific business logic
+- **Data Mappings**: Configuration for data source mappings
+- **Documentation**: Clinic-specific implementation details
 
-#### NumberFormattingUtils
-- Currency formatting
-- Percentage handling
-- Healthcare amount formatting
-- FTE calculations
+### Training (`training/`)
 
-### HR Module
+Educational resources including:
+- **CloverDX Exercises**: Hands-on training materials
+- **Integration Examples**: Real-world usage patterns
+- **Best Practices**: Guidelines for development and deployment
 
-#### Employee Transformations
-- **EmployeeIdTransformer**: Standardizes employee IDs to Workday format
-- **NameParser**: Parses and standardizes employee names
-- **AddressStandardizer**: Standardizes addresses for Workday
-- **ContactInfoValidator**: Validates and formats contact information
-- **EmploymentStatusMapper**: Maps legacy status codes to Workday
-- **HireDateConverter**: Converts and validates hire dates
-- **DemographicDataHandler**: Handles gender, ethnicity, veteran status
+## Development Workflow
 
-## Error Handling
+### 1. Setting Up a New Clinic Project
 
-All utilities include safe execution methods that won't break your transformations:
+1. Copy the clinic template:
+   ```bash
+   cp -r projects/clinic-template projects/new-clinic-name
+   cd projects/new-clinic-name
+   ```
+
+2. Update the README.md with clinic-specific information
+
+3. Set up your CloverDX workspace
+
+### 2. Using Global Tools
+
+1. Build the Java utilities:
+   ```bash
+   cd global-tools/java-utilities
+   mvn clean package
+   ```
+
+2. Copy the resulting JAR to your CloverDX project's lib directory
+
+3. Import required classes in your Java components
+
+### 3. Error Handling
+
+All utilities include safe execution methods:
 
 ```java
 // Safe execution with fallback
 String result = EmployeeIdTransformer.safeTransformEmployeeId(legacyId, "UNKNOWN");
 ```
 
-## Testing
+## Testing & Building
 
-Run tests with Maven:
+### Java Utilities
 ```bash
-mvn test
+cd global-tools/java-utilities
+mvn test                    # Run tests
+mvn clean package          # Build JAR
 ```
 
-## Building
-
-Build the JAR:
-```bash
-mvn clean package
-```
+### CloverDX Projects
+- Import workspaces from clinic directories
+- Use the training exercises for learning
+- Follow integration guides in `global-tools/docs/`
 
 ## Contributing
 
-1. Create individual utility classes for new transformations
+### For Global Tools
+1. Create utility classes in appropriate modules
 2. Include comprehensive Javadoc
 3. Add copy-paste usage examples
 4. Include safe execution methods
 5. Add unit tests
+
+### For Clinic Projects
+1. Follow the established project structure
+2. Document clinic-specific customizations
+3. Share reusable components back to global-tools when appropriate
+4. Include data mapping documentation
 
 ## License
 
