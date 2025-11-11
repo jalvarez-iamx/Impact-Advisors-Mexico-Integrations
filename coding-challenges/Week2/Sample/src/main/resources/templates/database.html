@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Database Overview</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+
+        :root {
+            --color-primary: #00457C;
+            --color-secondary: #477D27;
+            --color-text: #000000;
+            --color-accent: #6C8EBA;
+            --color-light: #D9E3EB;
+            --color-cream: #F8FAFB;
+            --font-main: 'Roboto', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-main);
+            background: var(--color-cream);
+            color: var(--color-text);
+            line-height: 1.7;
+            font-size: 15px;
+            font-weight: 300;
+            letter-spacing: 0.3px;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 80px 60px;
+        }
+
+        h1 {
+            font-family: var(--font-main);
+            font-size: 3rem;
+            font-weight: 300;
+            color: var(--color-primary);
+            text-align: center;
+            margin-bottom: 80px;
+            letter-spacing: 2px;
+        }
+
+        .table-container {
+            margin-bottom: 100px;
+            background: white;
+            border: 1px solid rgba(108, 142, 186, 0.15);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .table-container:hover {
+            border-color: var(--color-accent);
+            box-shadow: 0 20px 60px rgba(0, 69, 124, 0.12);
+        }
+
+        .table-header {
+            padding: 40px 50px;
+            border-bottom: 1px solid var(--color-light);
+            background: linear-gradient(to bottom, var(--color-light), white);
+        }
+
+        .table-title {
+            font-family: var(--font-main);
+            font-size: 1.8rem;
+            font-weight: 400;
+            color: var(--color-primary);
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .row-count {
+            font-size: 0.85rem;
+            color: var(--color-accent);
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            font-weight: 400;
+        }
+
+        .table-controls {
+            padding: 30px 50px;
+            background: var(--color-light);
+            border-bottom: 1px solid rgba(108, 142, 186, 0.15);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .search-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .search-input {
+            padding: 12px 20px;
+            border: 1px solid rgba(108, 142, 186, 0.3);
+            background: white;
+            font-size: 0.85rem;
+            width: 320px;
+            font-family: var(--font-main);
+            color: var(--color-text);
+            letter-spacing: 0.3px;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 1px var(--color-primary);
+        }
+
+        .search-input::placeholder {
+            color: var(--color-accent);
+            opacity: 0.6;
+        }
+
+        .search-btn {
+            background: transparent;
+            color: var(--color-secondary);
+            border: 1px solid var(--color-secondary);
+            padding: 12px 28px;
+            font-size: 0.8rem;
+            font-family: var(--font-main);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 400;
+        }
+
+        .search-btn:hover {
+            background: var(--color-secondary);
+            color: white;
+        }
+
+        .pagination {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .pagination-btn {
+            background: transparent;
+            color: var(--color-primary);
+            border: 1px solid var(--color-accent);
+            padding: 10px 24px;
+            font-size: 0.8rem;
+            font-family: var(--font-main);
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 400;
+        }
+
+        .pagination-btn:hover:not(:disabled) {
+            border-color: var(--color-primary);
+            background: var(--color-primary);
+            color: white;
+        }
+
+        .pagination-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .page-info {
+            font-size: 0.85rem;
+            color: var(--color-accent);
+            letter-spacing: 0.5px;
+            min-width: 100px;
+            text-align: center;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+            max-height: 650px;
+            overflow-y: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        thead {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        th {
+            background: var(--color-primary);
+            color: white;
+            padding: 20px 30px;
+            text-align: left;
+            font-weight: 400;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            border-right: 1px solid rgba(217, 227, 235, 0.1);
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        th:last-child {
+            border-right: none;
+        }
+
+        th:hover {
+            background: var(--color-accent);
+        }
+
+        td {
+            padding: 22px 30px;
+            border-bottom: 1px solid rgba(217, 227, 235, 0.5);
+            font-size: 0.9rem;
+            color: var(--color-text);
+            font-weight: 300;
+            letter-spacing: 0.2px;
+        }
+
+        tbody tr {
+            transition: background 0.2s ease;
+        }
+
+        tbody tr:hover {
+            background: var(--color-light);
+        }
+
+        tbody tr:nth-child(even) {
+            background: rgba(217, 227, 235, 0.25);
+        }
+
+        tbody tr:nth-child(even):hover {
+            background: var(--color-light);
+        }
+
+        .no-data {
+            text-align: center;
+            color: var(--color-accent);
+            font-style: italic;
+            padding: 80px 20px;
+            font-size: 1rem;
+            font-family: var(--font-main);
+        }
+
+        .error {
+            background: rgba(71, 125, 39, 0.08);
+            color: var(--color-secondary);
+            padding: 25px 35px;
+            border-left: 3px solid var(--color-secondary);
+            margin-bottom: 40px;
+            font-weight: 400;
+            letter-spacing: 0.3px;
+        }
+
+        .error strong {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+            font-family: var(--font-main);
+            font-weight: 500;
+        }
+
+        .table-wrapper::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        .table-wrapper::-webkit-scrollbar-track {
+            background: var(--color-light);
+        }
+
+        .table-wrapper::-webkit-scrollbar-thumb {
+            background: var(--color-accent);
+        }
+
+        .table-wrapper::-webkit-scrollbar-thumb:hover {
+            background: var(--color-primary);
+        }
+
+        .sort-icon {
+            display: inline-block;
+            margin-left: 8px;
+            font-size: 0.7rem;
+            opacity: 0.5;
+            transition: opacity 0.3s ease;
+        }
+
+        th:hover .sort-icon {
+            opacity: 1;
+        }
+
+        .sort-asc .sort-icon,
+        .sort-desc .sort-icon {
+            opacity: 1;
+        }
+
+        @keyframes fadeIn {
+            from { 
+                opacity: 0; 
+                transform: translateY(30px); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0); 
+            }
+        }
+
+        .table-container {
+            animation: fadeIn 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @media (max-width: 1024px) {
+            .container {
+                padding: 60px 40px;
+            }
+
+            h1 {
+                font-size: 2.5rem;
+                margin-bottom: 60px;
+            }
+
+            .table-header {
+                padding: 30px 40px;
+            }
+
+            .table-controls {
+                padding: 25px 40px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 40px 20px;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .table-header {
+                padding: 25px 30px;
+            }
+
+            .table-title {
+                font-size: 1.5rem;
+            }
+
+            .table-controls {
+                padding: 20px 30px;
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-input {
+                width: 100%;
+            }
+
+            .pagination {
+                justify-content: center;
+            }
+
+            th, td {
+                padding: 16px 20px;
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Database Overview</h1>
+
+        <div th:if="${error}" class="error">
+            <strong>Error</strong>
+            <span th:text="${error}"></span>
+        </div>
+
+        <div th:each="table : ${tables}" class="table-container">
+            <div class="table-header">
+                <h2 class="table-title" th:text="${table.name}"></h2>
+                <p class="row-count" th:text="${table.rowCount} + ' Records'"></p>
+            </div>
+
+            <div class="table-controls">
+                <div class="search-container">
+                    <input type="text" class="search-input" placeholder="Search records..." id="searchInput">
+                    <button class="search-btn" onclick="clearSearch()">Clear</button>
+                </div>
+                <div class="pagination">
+                    <button class="pagination-btn" id="prevBtn" onclick="changePage(-1)" disabled>Previous</button>
+                    <span class="page-info" id="pageInfo">Page 1 of 1</span>
+                    <button class="pagination-btn" id="nextBtn" onclick="changePage(1)" disabled>Next</button>
+                </div>
+            </div>
+
+            <div class="table-wrapper">
+                <table id="dataTable">
+                <thead>
+                    <tr>
+                        <th th:each="column : ${table.columns}" th:text="${column.name}" th:data-type="${column.typeName}"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:if="${table.rows.empty}" class="no-data">
+                        <td th:colspan="${table.columns.size()}" colspan="1">No records available</td>
+                    </tr>
+                    <tr th:each="row : ${table.rows}">
+                        <td th:each="cell : ${row.cells}" th:text="${cell}"></td>
+                    </tr>
+                </tbody>
+            </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentPage = 1;
+        const rowsPerPage = 50;
+        let allRows = [];
+        let filteredRows = [];
+        let sortColumn = -1;
+        let sortDirection = 1;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const table = document.getElementById('dataTable');
+            const tbody = table.querySelector('tbody');
+            allRows = Array.from(tbody.querySelectorAll('tr'));
+            filteredRows = [...allRows];
+
+            const headers = table.querySelectorAll('th');
+            headers.forEach((header, index) => {
+                header.addEventListener('click', () => sortTable(index));
+                header.innerHTML += '<span class="sort-icon">⬍</span>';
+            });
+
+            const searchInput = document.getElementById('searchInput');
+            searchInput.addEventListener('input', filterTable);
+
+            updateTable();
+        });
+
+        function sortTable(columnIndex) {
+            if (sortColumn === columnIndex) {
+                sortDirection *= -1;
+            } else {
+                sortColumn = columnIndex;
+                sortDirection = 1;
+            }
+
+            const header = document.querySelectorAll('th')[columnIndex];
+            const columnType = header.getAttribute('data-type').toLowerCase();
+
+            filteredRows.sort((a, b) => {
+                const aVal = a.cells[columnIndex].textContent.trim();
+                const bVal = b.cells[columnIndex].textContent.trim();
+
+                if (aVal === 'NULL' && bVal === 'NULL') return 0;
+                if (aVal === 'NULL') return sortDirection;
+                if (bVal === 'NULL') return -sortDirection;
+
+                let comparison = 0;
+
+                if (columnType.includes('date')) {
+                    const aDate = new Date(aVal);
+                    const bDate = new Date(bVal);
+                    comparison = aDate - bDate;
+                } else if (columnType.includes('decimal') || columnType.includes('numeric') ||
+                          columnType.includes('int') || columnType.includes('bigint') ||
+                          columnType.includes('smallint') || columnType.includes('tinyint') ||
+                          columnType.includes('double') || columnType.includes('float') ||
+                          columnType.includes('real')) {
+                    const aNum = parseFloat(aVal);
+                    const bNum = parseFloat(bVal);
+                    if (!isNaN(aNum) && !isNaN(bNum)) {
+                        comparison = aNum - bNum;
+                    } else {
+                        comparison = aVal.localeCompare(bVal);
+                    }
+                } else {
+                    comparison = aVal.localeCompare(bVal);
+                }
+
+                return comparison * sortDirection;
+            });
+
+            const headers = document.querySelectorAll('th');
+            headers.forEach((header, index) => {
+                const icon = header.querySelector('.sort-icon');
+                if (index === columnIndex) {
+                    if (sortDirection === 1) {
+                        header.classList.add('sort-asc');
+                        header.classList.remove('sort-desc');
+                        icon.textContent = '↑';
+                    } else {
+                        header.classList.add('sort-desc');
+                        header.classList.remove('sort-asc');
+                        icon.textContent = '↓';
+                    }
+                } else {
+                    header.classList.remove('sort-asc', 'sort-desc');
+                    icon.textContent = '⬍';
+                }
+            });
+
+            currentPage = 1;
+            updateTable();
+        }
+
+        function filterTable() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+
+            if (searchTerm === '') {
+                filteredRows = [...allRows];
+            } else {
+                filteredRows = allRows.filter(row => {
+                    return Array.from(row.cells).some(cell =>
+                        cell.textContent.toLowerCase().includes(searchTerm)
+                    );
+                });
+            }
+
+            currentPage = 1;
+            updateTable();
+        }
+
+        function clearSearch() {
+            document.getElementById('searchInput').value = '';
+            filterTable();
+        }
+
+        function updateTable() {
+            const tbody = document.querySelector('#dataTable tbody');
+            tbody.innerHTML = '';
+
+            const startIndex = (currentPage - 1) * rowsPerPage;
+            const endIndex = startIndex + rowsPerPage;
+            const pageRows = filteredRows.slice(startIndex, endIndex);
+
+            pageRows.forEach(row => {
+                tbody.appendChild(row.cloneNode(true));
+            });
+
+            updatePagination();
+        }
+
+        function updatePagination() {
+            const totalPages = Math.ceil(filteredRows.length / rowsPerPage);
+            const pageInfo = document.getElementById('pageInfo');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+
+            pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
+
+            prevBtn.disabled = currentPage === 1;
+            nextBtn.disabled = currentPage === totalPages || totalPages === 0;
+        }
+
+        function changePage(direction) {
+            const totalPages = Math.ceil(filteredRows.length / rowsPerPage);
+            currentPage += direction;
+
+            if (currentPage < 1) currentPage = 1;
+            if (currentPage > totalPages) currentPage = totalPages;
+
+            updateTable();
+        }
+    </script>
+</body>
+</html>

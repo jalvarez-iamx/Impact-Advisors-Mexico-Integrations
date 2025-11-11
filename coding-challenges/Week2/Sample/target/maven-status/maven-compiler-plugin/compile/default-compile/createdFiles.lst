@@ -1,0 +1,5 @@
+com\company\week2\DatabaseViewer$ValidationException.class
+com\company\week2\DatabaseViewer$ColumnDefinition.class
+com\company\week2\DatabaseViewer$RowData.class
+com\company\week2\DatabaseViewer.class
+com\company\week2\DatabaseViewer$TableData.class
