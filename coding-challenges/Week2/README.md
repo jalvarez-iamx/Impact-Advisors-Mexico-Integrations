@@ -47,12 +47,6 @@ However, upon running the application, you will notice that three specific colum
 - Update this README with your findings and solution approach.
 - If no fix is possible, document the reasons.
 
-## Hints
-
-- Check the actual database schema vs. hardcoded definitions.
-- Look at the data types and how they are handled in `getFormattedValue`.
-- Consider if the missing data is due to incomplete imports or optional fields.
-
 ## Dependencies
 
 - PostgreSQL JDBC Driver (org.postgresql:postgresql:42.7.3)
