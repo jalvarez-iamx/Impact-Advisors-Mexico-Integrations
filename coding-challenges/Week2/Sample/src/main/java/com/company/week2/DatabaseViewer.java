@@ -6,6 +6,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import io.github.cdimascio.dotenv.Dotenv;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,10 +19,18 @@ import java.util.Map;
 public class DatabaseViewer {
 
     // Database configuration
-    private static final String DB_URL = "jdbc:postgresql://worker-time-away-impact-advisors-mexico-sql.k.aivencloud.com:12627/defaultdb?sslmode=require";
-    private static final String DB_USERNAME = "avnadmin";
-    private static final String DB_PASSWORD = "AVNS_c3uhhzeDQKDhjPd3LVN";
-    private static final String DB_DRIVER = "org.postgresql.Driver";
+    private static String DB_URL;
+    private static String DB_USERNAME;
+    private static String DB_PASSWORD;
+    private static String DB_DRIVER;
+
+    static {
+        Dotenv dotenv = Dotenv.load();
+        DB_URL = dotenv.get("DB_URL");
+        DB_USERNAME = dotenv.get("DB_USERNAME");
+        DB_PASSWORD = dotenv.get("DB_PASSWORD");
+        DB_DRIVER = dotenv.get("DB_DRIVER");
+    }
 
     // Hardcoded column definitions for worker_time_away table
     private static final List<ColumnDefinition> COLUMN_DEFINITIONS = List.of(
@@ -167,7 +177,6 @@ public class DatabaseViewer {
                     String formattedValue = getValidatedValue(resultSet, col.name, col.type);
                     rowData.add(formattedValue);
                 } catch (ValidationException e) {
-                    System.err.println("Validation failed for column " + col.name + ": " + e.getMessage());
                     rowData.add(""); // Don't display invalid data
                 }
             }
