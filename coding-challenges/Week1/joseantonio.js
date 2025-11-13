@@ -1,267 +1,328 @@
-/*
- * Optimized Elevator Control Script for Elevator Saga
- * Author: Jose Antonio Alvarez Moreno
- *
- * This script implements an efficient elevator management system that minimizes waiting times
- * and maximizes passenger throughput by intelligently assigning elevators to requests and
- * allowing opportunistic pickups during travel.
- */
-
 {
     init: function(elevators, floors) {
-        /*
-         * The init function is called once at the start of the simulation.
-         * It sets up event handlers and initializes data structures.
-         * Essential: This is the entry point for configuring elevator behavior.
-         * Optimization potential: Could be extended to support zoning (assigning elevators to floor ranges).
-         */
+        // upCalls: Object to track floors where the up button has been pressed.
+        // Key: floor index, Value: timestamp when the call was made (Date.now()).
+        // Used to prevent duplicate calls and track pending up requests.
+        var upCalls = {};
 
-        /*
-         * upRequests: Array to store floor numbers requesting upward travel.
-         * Why chosen: Simple array provides FIFO (First-In-First-Out) ordering, which is fair and easy to implement.
-         * Logic: When a floor presses the up button, we add the floor number here if not already present.
-         * This ensures we don't process duplicate requests and can service them in the order received.
-         * Essential: Tracks pending up calls; without this, elevators wouldn't know where to go.
-         * Optimization: Could be a priority queue sorted by floor number or wait time for more efficient servicing.
-         */
-        var upRequests = [];
+        // downCalls: Object to track floors where the down button has been pressed.
+        // Key: floor index, Value: timestamp when the call was made (Date.now()).
+        // Used to prevent duplicate calls and track pending down requests.
+        var downCalls = {};
 
-        /*
-         * downRequests: Array to store floor numbers requesting downward travel.
-         * Why chosen: Mirrors upRequests for symmetry and separation of concerns.
-         * Logic: Similar to upRequests but for down direction; prevents mixing up/down logic.
-         * Essential: Allows directional awareness, crucial for efficient elevator operation.
-         * Optimization: Could be combined into a single queue with direction metadata, but separation simplifies logic.
-         */
-        var downRequests = [];
+        // callTimes: Object to track the timestamp of all calls (up and down).
+        // Key: 'floorIndex_direction' (e.g., '5_up'), Value: timestamp (Date.now()).
+        // Used to calculate wait times for calls.
+        var callTimes = {};
 
-        /*
-         * Function to assign the closest available elevator to a floor request.
-         * This reduces unnecessary travel and improves response time.
-         * Essential: Ensures requests are handled by the most suitable elevator.
-         * Optimization: Could incorporate load balancing by checking elevator capacity (loadFactor).
-         */
-        /*
-         * assignElevator function: Assigns the most suitable elevator to a floor request.
-         * Parameters:
-         *   - floorNum: The floor number making the request (integer).
-         *   - direction: The direction of travel requested ("up" or "down").
-         * Why chosen: Function encapsulates assignment logic for reusability and clarity.
-         * Logic: Finds the elevator with the smallest distance to the requesting floor,
-         * preferring idle elevators or those already moving in the same direction.
-         * Essential: Ensures efficient assignment; without this, elevators might be assigned randomly or inefficiently.
-         * Optimization: Could factor in elevator speed, current load, or predicted future requests.
-         */
-        function assignElevator(floorNum, direction) {
-            /*
-             * bestElevator: Variable to track the most suitable elevator found so far.
-             * Why chosen: Null initialization allows easy checking if any elevator was found.
-             * Logic: Updated whenever a closer elevator is discovered.
-             * Essential: Holds the final assignment target.
-             */
-            var bestElevator = null;
+        // lastJobTime: Object to track when each elevator last received a job.
+        // Key: elevator index, Value: timestamp (Date.now()).
+        // Helps in prioritizing elevators that haven't worked recently.
+        var lastJobTime = {}; // Track when each elevator last got a job
 
-            /*
-             * minDistance: Tracks the smallest distance found to a requesting floor.
-             * Why chosen: Infinity as initial value ensures any real distance will be smaller.
-             * Logic: Used to compare and select the closest elevator.
-             * Essential: Criterion for choosing the "best" elevator.
-             * Optimization: Could use Manhattan distance or time-based metrics instead of absolute distance.
-             */
-            var minDistance = Infinity;
+        // elevatorIdleStart: Object to track when each elevator became idle.
+        // Key: elevator index, Value: timestamp (Date.now()) when it became idle.
+        // Used to calculate idle time for prioritization.
+        var elevatorIdleStart = {}; // Track when elevator became idle
 
-            /*
-             * Loop through all elevators using forEach to evaluate each one.
-             * Why chosen: forEach is simple and readable for array iteration in JavaScript.
-             * Logic: Checks each elevator's suitability for the request.
-             * Essential: Ensures we consider every elevator for optimal assignment.
-             * Optimization: Could use a more efficient search algorithm if there are many elevators.
-             */
-            elevators.forEach(function(elevator) {
-                /*
-                 * Condition: elevator.destinationQueue.length === 0 || elevator.destinationDirection() === direction
-                 * Why chosen: Checks if elevator is idle (no destinations) or already going the same way.
-                 * Logic: Idle elevators can be assigned immediately; same-direction elevators can pick up en route.
-                 * Essential: Prevents assigning elevators that would need to change direction unnecessarily.
-                 * Optimization: Could also check loadFactor() to avoid overloading elevators.
-                 */
-                if (elevator.destinationQueue.length === 0 || elevator.destinationDirection() === direction) {
-                    /*
-                     * distance: Absolute difference between elevator's current floor and requested floor.
-                     * Why chosen: Simple Euclidean distance on a 1D floor line.
-                     * Logic: Smaller distance means faster response time.
-                     * Essential: Primary criterion for selecting the closest elevator.
-                     * Optimization: Could factor in elevator speed or door opening time for more accurate estimates.
-                     */
-                    var distance = Math.abs(elevator.currentFloor() - floorNum);
+        // Initialize job times for each elevator
+        elevators.forEach(function(e, i) {
+            lastJobTime[i] = 0;
+            elevatorIdleStart[i] = 0;
+        });
 
-                    /*
-                     * Comparison: if (distance < minDistance)
-                     * Logic: Updates bestElevator if this one is closer than previously found elevators.
-                     * Essential: Ensures we always keep track of the closest suitable elevator.
-                     */
-                    if (distance < minDistance) {
-                        minDistance = distance;
-                        bestElevator = elevator;
+        // Set up event listeners for floor buttons
+        floors.forEach(function(floor, i) {
+            floor.on("up_button_pressed", function() {
+                // Only record if not already called
+                if (!upCalls[i]) {
+                    upCalls[i] = Date.now();
+                    callTimes[i + '_up'] = Date.now();
+                }
+            });
+            floor.on("down_button_pressed", function() {
+                // Only record if not already called
+                if (!downCalls[i]) {
+                    downCalls[i] = Date.now();
+                    callTimes[i + '_down'] = Date.now();
+                }
+            });
+        });
+
+        // getWaitTime: Function to calculate how long a call has been waiting.
+        // Parameters: floor (number), direction ('up' or 'down').
+        // Returns: wait time in seconds (number).
+        // If no call exists, returns 0.
+        function getWaitTime(floor, direction) {
+            var key = floor + '_' + direction;
+            if (!callTimes[key]) return 0;
+            return (Date.now() - callTimes[key]) / 1000;
+        }
+
+        // getIdleTime: Function to calculate how long an elevator has been idle.
+        // Parameters: elevatorId (number, index of elevator).
+        // Returns: idle time in milliseconds (number).
+        // If never idle, returns 0.
+        function getIdleTime(elevatorId) {
+            if (!elevatorIdleStart[elevatorId]) return 0;
+            return Date.now() - elevatorIdleStart[elevatorId];
+        }
+
+        // findBestElevator: Function to select the best elevator for a call.
+        // Parameters: targetFloor (number), direction ('up' or 'down'), urgency (number, 0-1).
+        // Returns: best elevator object or null if none available.
+        // Considers distance, direction, idle status, load, etc.
+        function findBestElevator(targetFloor, direction, urgency) {
+            // candidates: Array to hold potential elevators with their metrics.
+            var candidates = [];
+
+            elevators.forEach(function(e, idx) {
+                // cf: current floor of the elevator.
+                var cf = e.currentFloor();
+                // dir: current direction of the elevator ('up', 'down', 'stopped').
+                var dir = e.destinationDirection();
+                // queue: array of destination floors for the elevator.
+                var queue = e.destinationQueue;
+                // load: load factor of the elevator (0-1, where 1 is full).
+                var load = e.loadFactor();
+
+                // Skip elevators that are too full (>85% capacity)
+                if (load > 0.85) return;
+
+                // dist: absolute distance from current floor to target floor.
+                var dist = Math.abs(cf - targetFloor);
+
+                // sameDirection: boolean indicating if elevator is going same direction and can pick up.
+                var sameDirection = false;
+                if (dir === direction) {
+                    if (direction === "up" && cf <= targetFloor) {
+                        sameDirection = true;
+                    } else if (direction === "down" && cf >= targetFloor) {
+                        sameDirection = true;
+                    }
+                }
+
+                // isIdle: boolean indicating if elevator has no destinations and is stopped.
+                var isIdle = queue.length === 0 && (dir === "stopped" || !dir);
+
+                // idleTime: how long the elevator has been idle (milliseconds).
+                var idleTime = getIdleTime(idx);
+
+                // Add elevator to candidates with all relevant metrics
+                candidates.push({
+                    elevator: e,
+                    index: idx,
+                    distance: dist,
+                    sameDirection: sameDirection,
+                    isIdle: isIdle,
+                    idleTime: idleTime,
+                    queueLength: queue.length,
+                    load: load
+                });
+            });
+
+            if (candidates.length === 0) return null;
+
+            // Sort candidates by priority hierarchy:
+            // 1. Same direction elevators (closest first)
+            // 2. Idle elevators (closest first, then longest idle)
+            // 3. Other elevators (closest first, then longest idle)
+            candidates.sort(function(a, b) {
+                // For urgent calls (>80% urgency), prioritize same direction, then distance, then idle time
+                if (urgency > 0.8) {
+                    if (a.sameDirection && !b.sameDirection) return -1;
+                    if (!a.sameDirection && b.sameDirection) return 1;
+                    if (a.distance !== b.distance) return a.distance - b.distance;
+                    return b.idleTime - a.idleTime;
+                }
+
+                // Priority 1: Same direction elevators
+                if (a.sameDirection && !b.sameDirection) return -1;
+                if (!a.sameDirection && b.sameDirection) return 1;
+
+                if (a.sameDirection && b.sameDirection) {
+                    // Both same direction - closest wins
+                    if (a.distance !== b.distance) return a.distance - b.distance;
+                    // If equidistant, longest idle wins
+                    return b.idleTime - a.idleTime;
+                }
+
+                // Priority 2: Idle elevators
+                if (a.isIdle && !b.isIdle) return -1;
+                if (!a.isIdle && b.isIdle) return 1;
+
+                if (a.isIdle && b.isIdle) {
+                    // Both idle - closest wins
+                    if (a.distance !== b.distance) return a.distance - b.distance;
+                    // If equidistant, longest idle wins (or lower index at start)
+                    if (a.idleTime === 0 && b.idleTime === 0) return a.index - b.index;
+                    return b.idleTime - a.idleTime;
+                }
+
+                // Priority 3: Busy elevators - closest and least busy
+                if (a.distance !== b.distance) return a.distance - b.distance;
+                if (a.queueLength !== b.queueLength) return a.queueLength - b.queueLength;
+                return b.idleTime - a.idleTime;
+            });
+
+            return candidates[0].elevator;
+        }
+
+        // insertFloor: Function to add a floor to an elevator's destination queue optimally.
+        // Parameters: elevator (object), floor (number), priority (boolean).
+        // Inserts the floor in the best position based on current direction and priority.
+        function insertFloor(elevator, floor, priority) {
+            var queue = elevator.destinationQueue;
+            // Don't add if already in queue
+            if (queue.indexOf(floor) !== -1) return;
+
+            var cf = elevator.currentFloor();
+            var dir = elevator.destinationDirection();
+
+            if (queue.length === 0) {
+                queue.push(floor);
+            } else if (priority) {
+                // High priority - insert intelligently
+                if ((dir === "up" && floor > cf) || (dir === "down" && floor < cf)) {
+                    queue.unshift(floor); // Add to front
+                } else {
+                    queue.push(floor); // Add to end
+                }
+            } else {
+                // Insert in optimal position based on direction
+                if ((dir === "up" || (dir === "stopped" && floor > cf)) && floor >= cf) {
+                    var inserted = false;
+                    for (var i = 0; i < queue.length; i++) {
+                        if (queue[i] > floor) {
+                            queue.splice(i, 0, floor);
+                            inserted = true;
+                            break;
+                        }
+                    }
+                    if (!inserted) queue.push(floor);
+                } else if ((dir === "down" || (dir === "stopped" && floor < cf)) && floor <= cf) {
+                    var inserted = false;
+                    for (var i = 0; i < queue.length; i++) {
+                        if (queue[i] < floor) {
+                            queue.splice(i, 0, floor);
+                            inserted = true;
+                            break;
+                        }
+                    }
+                    if (!inserted) queue.push(floor);
+                } else {
+                    queue.push(floor);
+                }
+            }
+
+            elevator.destinationQueue = queue;
+            elevator.checkDestinationQueue();
+        }
+
+        // Set up event listeners for each elevator
+        elevators.forEach(function(elevator, elevatorId) {
+
+            elevator.on("idle", function() {
+                // Mark as idle - DO NOT MOVE
+                elevatorIdleStart[elevatorId] = Date.now();
+                // Clear destination queue to prevent unnecessary moves
+                elevator.destinationQueue = [];
+                elevator.checkDestinationQueue();
+            });
+
+            elevator.on("floor_button_pressed", function(floorNum) {
+                // Add floor to queue when passenger presses button inside elevator
+                insertFloor(elevator, floorNum, false);
+            });
+
+            elevator.on("passing_floor", function(floorNum, direction) {
+                // Check if we should stop at this floor for waiting passengers
+                if (elevator.loadFactor() < 0.65) { // Only if not too full
+                    var waitTime = 0;
+                    var hasCall = false;
+
+                    if (direction === "up" && upCalls[floorNum]) {
+                        waitTime = getWaitTime(floorNum, 'up');
+                        hasCall = true;
+                    } else if (direction === "down" && downCalls[floorNum]) {
+                        waitTime = getWaitTime(floorNum, 'down');
+                        hasCall = true;
+                    }
+
+                    // Only stop if urgent (>9s wait) or very light load (<40%)
+                    if (hasCall && (waitTime > 9 || elevator.loadFactor() < 0.4)) {
+                        insertFloor(elevator, floorNum, waitTime > 9); // High priority if very urgent
                     }
                 }
             });
 
-            /*
-             * Final assignment: if (bestElevator)
-             * Logic: Only assign if a suitable elevator was found.
-             * Essential: Sends the elevator to the requested floor, fulfilling the user's call.
-             * Optimization: Could queue the request if no elevator is available, but in this implementation we assume at least one elevator is always assignable.
-             */
-            if (bestElevator) {
-                bestElevator.goToFloor(floorNum);
-            }
-        }
-
-        /*
-         * Set up event handlers for floor button presses.
-         * Essential: Responds to user inputs from floors.
-         * Optimization: Could debounce rapid presses or prioritize based on crowd size (if available).
-         */
-        /*
-         * Set up event handlers for each floor's buttons.
-         * Why chosen: forEach loop ensures every floor is handled consistently.
-         * Logic: Attaches listeners to up and down buttons on each floor.
-         * Essential: Allows the system to respond to user inputs from any floor.
-         * Optimization: Could be optimized for buildings with many floors by using event delegation.
-         */
-        floors.forEach(function(floor) {
-            /*
-             * Event handler for up_button_pressed.
-             * Logic: When up button is pressed, check if floor is already in upRequests.
-             * If not, add it and immediately try to assign an elevator.
-             * Essential: Registers upward travel requests and triggers assignment.
-             * Optimization: Could debounce multiple presses or prioritize based on wait time.
-             */
-            floor.on("up_button_pressed", function() {
-                if (upRequests.indexOf(floor.floorNum()) === -1) {
-                    upRequests.push(floor.floorNum());
-                    assignElevator(floor.floorNum(), "up");
-                }
-            });
-
-            /*
-             * Event handler for down_button_pressed.
-             * Logic: Similar to up button but for downward requests.
-             * Essential: Registers downward travel requests symmetrically.
-             * Optimization: Same as up button handler.
-             */
-            floor.on("down_button_pressed", function() {
-                if (downRequests.indexOf(floor.floorNum()) === -1) {
-                    downRequests.push(floor.floorNum());
-                    assignElevator(floor.floorNum(), "down");
-                }
-            });
-        });
-
-        /*
-         * Set up event handlers for each elevator.
-         * Essential: Defines elevator behavior in response to various events.
-         * Optimization: Could implement more sophisticated state machines for complex scenarios.
-         */
-        /*
-         * Set up event handlers for each elevator.
-         * Why chosen: forEach ensures consistent behavior across all elevators.
-         * Logic: Defines how each elevator responds to various events.
-         * Essential: Core of the elevator logic; without this, elevators wouldn't respond to events.
-         * Optimization: Could use a more sophisticated state machine for complex behaviors.
-         */
-        elevators.forEach(function(elevator) {
-            /*
-             * Event handler for "idle" event.
-             * Logic: When elevator becomes idle, check for pending requests and service the first one.
-             * Prioritizes up requests over down requests (arbitrary but consistent choice).
-             * Essential: Prevents elevators from sitting idle when there are calls to answer.
-             * Optimization: Could implement more sophisticated prioritization based on wait times or floor proximity.
-             */
-            elevator.on("idle", function() {
-                if (upRequests.length > 0) {
-                    /*
-                     * nextFloor: The floor number retrieved from the front of upRequests queue.
-                     * Why chosen: shift() removes and returns the first element (FIFO).
-                     * Logic: Services the oldest up request first.
-                     */
-                    var nextFloor = upRequests.shift();
-                    elevator.goToFloor(nextFloor);
-                } else if (downRequests.length > 0) {
-                    /*
-                     * nextFloor: Similar to above but for down requests.
-                     */
-                    var nextFloor = downRequests.shift();
-                    elevator.goToFloor(nextFloor);
-                }
-            });
-
-            /*
-             * Event handler for "floor_button_pressed" (inside elevator).
-             * Logic: When a passenger presses a floor button inside, add it to the elevator's destination queue.
-             * Essential: Allows passengers to specify their destination.
-             * Optimization: Could check if floor is already in queue or validate the request.
-             */
-            elevator.on("floor_button_pressed", function(floorNum) {
-                elevator.goToFloor(floorNum);
-            });
-
-            /*
-             * Event handler for "passing_floor".
-             * Logic: If elevator is moving and passes a floor with a pending request in the same direction,
-             * pick up the request by adding the floor to the destination queue.
-             * Essential: Enables opportunistic servicing, reducing overall wait times.
-             * Optimization: Could check elevator capacity before picking up additional passengers.
-             */
-            elevator.on("passing_floor", function(floorNum, direction) {
-                if (direction === "up" && upRequests.indexOf(floorNum) !== -1) {
-                    /*
-                     * Remove floorNum from upRequests using splice.
-                     * Why chosen: splice(index, 1) removes exactly one element at the specified index.
-                     * Logic: Ensures we don't service the same request multiple times.
-                     */
-                    upRequests.splice(upRequests.indexOf(floorNum), 1);
-                    elevator.goToFloor(floorNum);
-                } else if (direction === "down" && downRequests.indexOf(floorNum) !== -1) {
-                    /*
-                     * Similar logic for down requests.
-                     */
-                    downRequests.splice(downRequests.indexOf(floorNum), 1);
-                    elevator.goToFloor(floorNum);
-                }
-            });
-
-            /*
-             * Event handler for "stopped_at_floor".
-             * Logic: When elevator stops at a floor, remove any pending requests for that floor
-             * from both queues (in case there were both up and down requests).
-             * Essential: Cleans up fulfilled requests to prevent duplicate servicing.
-             * Optimization: Could track which direction was serviced for more precise cleanup.
-             */
             elevator.on("stopped_at_floor", function(floorNum) {
-                /*
-                 * upIndex: Index of floorNum in upRequests array, or -1 if not found.
-                 * Why chosen: indexOf returns the index for easy removal.
-                 * Logic: Find and remove the floor from up requests if present.
-                 */
-                var upIndex = upRequests.indexOf(floorNum);
-                if (upIndex !== -1) {
-                    upRequests.splice(upIndex, 1);
-                }
+                // Clear the call for this floor since we've arrived
+                delete upCalls[floorNum];
+                delete downCalls[floorNum];
+                delete callTimes[floorNum + '_up'];
+                delete callTimes[floorNum + '_down'];
 
-                /*
-                 * downIndex: Similar to upIndex but for downRequests.
-                 */
-                var downIndex = downRequests.indexOf(floorNum);
-                if (downIndex !== -1) {
-                    downRequests.splice(downIndex, 1);
+                // If queue is now empty, mark as idle
+                if (elevator.destinationQueue.length === 0) {
+                    elevatorIdleStart[elevatorId] = Date.now();
                 }
             });
         });
+
+        // Job assignment loop - runs every 100ms to assign unhandled calls
+        setInterval(function() {
+            // allCalls: Array to collect all pending calls with their details.
+            var allCalls = [];
+
+            // Collect all pending up calls
+            for (var f in upCalls) {
+                var floor = parseInt(f);
+                var waitTime = getWaitTime(floor, 'up');
+                allCalls.push({
+                    floor: floor,
+                    direction: 'up',
+                    wait: waitTime,
+                    urgency: waitTime / 13 // Urgency scales with wait time (13s = 1.0)
+                });
+            }
+            // Collect all pending down calls
+            for (var f in downCalls) {
+                var floor = parseInt(f);
+                var waitTime = getWaitTime(floor, 'down');
+                allCalls.push({
+                    floor: floor,
+                    direction: 'down',
+                    wait: waitTime,
+                    urgency: waitTime / 13
+                });
+            }
+
+            // Sort calls by urgency (most urgent first)
+            allCalls.sort(function(a, b) { return b.urgency - a.urgency; });
+
+            // Assign each unhandled call to the best available elevator
+            allCalls.forEach(function(call) {
+                // Check if already assigned (in some elevator's queue)
+                var isHandled = elevators.some(function(e) {
+                    return e.destinationQueue.indexOf(call.floor) !== -1;
+                });
+
+                if (!isHandled) {
+                    var e = findBestElevator(call.floor, call.direction, call.urgency);
+                    if (e) {
+                        var elevatorIdx = elevators.indexOf(e);
+                        insertFloor(e, call.floor, call.urgency > 0.7); // High priority if urgent
+                        lastJobTime[elevatorIdx] = Date.now();
+                        elevatorIdleStart[elevatorIdx] = 0; // No longer idle
+                    }
+                }
+            });
+
+        }, 100); // Check every 100ms
     },
 
-        update: function(dt, elevators, floors) {
-            // We normally don't need to do anything here
-        }
+    update: function(dt, elevators, floors) {
+        // Game loop - called every frame, but not used in this implementation
+    }
 }
