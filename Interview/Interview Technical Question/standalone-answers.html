@@ -173,117 +173,100 @@
             <div id="architecture" class="tab-content hidden">
                 <div class="space-y-6">
                     <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-8">
-                        <h2 class="text-xl font-bold text-slate-900 mb-4">Reference Architecture Diagram</h2>
+                        <h2 class="text-xl font-bold text-slate-900 mb-4">Simple System Architecture</h2>
                         <p class="text-slate-600 mb-6">
-                            This diagram shows a comprehensive system architecture. Candidates don't need to match this exactly,
-                            but should demonstrate similar thinking about components and data flow. Look for them to identify
-                            the key layers and how data moves between them.
+                            Here's what a good system design should include. Look for candidates who mention these main parts
+                            and explain how they work together. They don't need to be technical experts, but should show they
+                            understand the big picture.
                         </p>
 
-                        <div class="bg-slate-50 rounded-lg p-6 border-2 border-slate-200">
-                            <div class="mb-4 p-3 bg-blue-50 rounded border-l-4 border-blue-400">
-                                <p class="text-sm text-blue-800"><strong>💡 How to evaluate:</strong> Does the candidate identify similar layers? Do they explain data flow between components? Do they consider integration points?</p>
-                            </div>
-                            <pre class="text-xs font-mono text-slate-800 overflow-x-auto whitespace-pre">┌─────────────────────────────────────────────────────────────────────────────┐
-│                          FACE RECOGNITION DEVICES                            │
-│                    (Existing Access Control System)                          │
-│         Camera 1    Camera 2    Camera 3    ...    Camera N                  │
-│                                                                             │
-│  📷 Hardware that generates face recognition events                        │
-│  🔗 Must integrate with existing cameras/systems                           │
-└────────────┬────────────────────────────────────────────────┬────────────────┘
-             │                                                 │
-             │ Facial Recognition Events                      │ Device Status
-             │ (Person ID, Timestamp, Location)               │ & Health Data
-             ▼                                                 ▼
-┌────────────────────────────────────────────────────────────────────────────┐
-│                        EVENT INGESTION LAYER                                │
-│  ┌─────────────────┐         ┌──────────────────┐                          │
-│  │  Message Queue  │         │  Event Validator │                          │
-│  │  (Kafka/RabbitMQ)│────────▶│  & Enrichment   │                          │
-│  │                 │         │                  │                          │
-│  │  📨 Async comms │         │  ✅ Data quality │                          │
-│  │  🔄 Buffering   │         │  🏷️ Add metadata │                          │
-│  └─────────────────┘         └──────────────────┘                          │
-└────────────────────────────────────┬───────────────────────────────────────┘
-                                     │
-                     ┌────────────────┴────────────────┐
-                     ▼                                 ▼
-┌───────────────────────────────┐    ┌──────────────────────────────────┐
-│   ATTENDANCE PROCESSING       │    │    REAL-TIME MONITORING          │
-│         ENGINE                │    │                                  │
-│  ┌─────────────────────────┐ │    │  ┌────────────────────────────┐ │
-│  │ Business Rules Engine   │ │    │  │  Dashboard Service         │ │
-│  │ - Check-in/out logic    │ │    │  │  - Live attendance view    │ │
-│  │ - Break detection       │ │    │  │  - Alert notifications     │ │
-│  │ - Shift validation      │ │    │  │  - Anomaly detection       │ │
-│  │ - Overtime calculation  │ │    │  └────────────────────────────┘ │
-│  └─────────────────────────┘ │    │                                  │
-│                               │    │  📊 Real-time visibility       │
-│  ⚙️ Core business logic       │    │  🚨 Proactive alerts           │
-└──────────────┬────────────────┘    └──────────────────────────────────┘
-               │
-               ▼
-┌────────────────────────────────────────────────────────────────────────────┐
-│                          DATA PERSISTENCE LAYER                             │
-│  ┌──────────────────────┐  ┌─────────────────────┐  ┌──────────────────┐  │
-│  │  Relational DB       │  │  Time-Series DB     │  │  Data Warehouse  │  │
-│  │  (PostgreSQL/MySQL)  │  │  (InfluxDB/TimescaleDB)│  │  (Snowflake/     │  │
-│  │                      │  │                     │  │   Redshift)      │  │
-│  │  - Employee records  │  │  - Raw events       │  │  - Historical    │  │
-│  │  - Shift schedules   │  │  - Metrics          │  │    analytics     │  │
-│  │  - Policies          │  │  - Device logs      │  │  - Compliance    │  │
-│  │                      │  │                     │  │                  │  │
-│  │  👥 Structured data  │  │  📈 Time-based data │  │  📊 Analytics     │  │
-│  └──────────────────────┘  └─────────────────────┘  └──────────────────┘  │
-└────────────────────┬───────────────────────────────────────────────────────┘
-                     │
-                     ▼
-┌────────────────────────────────────────────────────────────────────────────┐
-│                       INTEGRATION & API LAYER                               │
-│  ┌─────────────────┐  ┌──────────────────┐  ┌─────────────────────────┐   │
-│  │  REST API       │  │  GraphQL API     │  │  Webhook Service        │   │
-│  │  - CRUD ops     │  │  - Flexible      │  │  - External triggers    │   │
-│  │  - Batch ops    │  │    queries       │  │  - Event subscriptions  │   │
-│  │                 │  │                  │  │                          │   │
-│  │  🔌 Standard APIs│  │  📋 Efficient   │  │  🔔 Push notifications   │
-│  └─────────────────┘  └──────────────────┘  └─────────────────────────┘   │
-└────────────┬───────────────────────┬──────────────────────────────────────┘
-             │                       │
-             ▼                       ▼
-┌──────────────────────┐    ┌────────────────────────────────────────────┐
-│  EXTERNAL SYSTEMS    │    │       USER INTERFACES                      │
-│                      │    │                                            │
-│  ┌────────────────┐ │    │  ┌──────────────┐    ┌─────────────────┐  │
-│  │ Payroll System │◀┼────┼──│ Admin Portal │    │ Employee Portal │  │
-│  │ (ADP, Workday) │ │    │  │ - Reports    │    │ - Self-service  │  │
-│  └────────────────┘ │    │  │ - Analytics  │    │ - Time cards    │  │
-│                      │    │  │ - Config     │    │ - Requests      │  │
-│  ┌────────────────┐ │    │  └──────────────┘    └─────────────────┘  │
-│  │ HR System      │◀┼────┤                                            │
-│  │ (SAP, Oracle)  │ │    │  ┌──────────────┐    ┌─────────────────┐  │
-│  └────────────────┘ │    │  │ Manager View │    │ Mobile App      │  │
-│                      │    │  │ - Team data  │    │ - Check status  │  │
-│  ┌────────────────┐ │    │  │ - Approvals  │    │ - Notifications │  │
-│  │ Access Control │◀┼────┤  └──────────────┘    └─────────────────┘  │
-│  │ System (Legacy)│ │    │                                            │
-│  └────────────────┘ │    └────────────────────────────────────────────┘
-│                      │
-│  🔗 Must connect to  │
-│  existing systems!   │
-└──────────────────────┘
+                        <div class="mb-6 p-4 bg-blue-50 rounded-lg border-l-4 border-blue-400">
+                            <p class="text-sm text-blue-800"><strong>💡 How to evaluate:</strong> Does the candidate identify these main components? Do they explain how information flows between them? Do they mention connecting to existing systems?</p>
+                        </div>
 
-┌────────────────────────────────────────────────────────────────────────────┐
-│                     CROSS-CUTTING CONCERNS                                  │
-│                                                                             │
-│  🔒 Security: Encryption at rest/transit, RBAC, Audit logs                 │
-│  📊 Monitoring: Prometheus, Grafana, ELK Stack                             │
-│  🔄 Backup: Automated backups, Disaster recovery, Geographic redundancy    │
-│  📱 Notifications: Email, SMS, Push notifications                          │
-│  ⚖️  Compliance: GDPR, HIPAA, SOC2, Data retention policies               │
-│                                                                             │
-│  🛡️  Don't forget these apply to EVERY layer!                             │
-└────────────────────────────────────────────────────────────────────────────┘</pre>
+                        <!-- Simple Visual Architecture -->
+                        <div class="space-y-6">
+                            <!-- Layer 1: Input -->
+                            <div class="flex items-center gap-4 p-4 bg-green-50 rounded-lg border-2 border-green-200">
+                                <div class="text-4xl">📷</div>
+                                <div class="flex-1">
+                                    <h3 class="font-bold text-green-900 text-lg">1. Face Recognition Cameras</h3>
+                                    <p class="text-green-800">Existing security cameras that recognize faces and send attendance data</p>
+                                    <p class="text-sm text-green-700 mt-1"><strong>Look for:</strong> "integrate with current cameras", "existing access control system"</p>
+                                </div>
+                            </div>
+
+                            <!-- Arrow -->
+                            <div class="flex justify-center">
+                                <div class="text-3xl text-slate-400">⬇️</div>
+                            </div>
+
+                            <!-- Layer 2: Processing -->
+                            <div class="flex items-center gap-4 p-4 bg-blue-50 rounded-lg border-2 border-blue-200">
+                                <div class="text-4xl">⚙️</div>
+                                <div class="flex-1">
+                                    <h3 class="font-bold text-blue-900 text-lg">2. Attendance Processing</h3>
+                                    <p class="text-blue-800">Smart system that calculates check-in/out times, breaks, and overtime</p>
+                                    <p class="text-sm text-blue-700 mt-1"><strong>Look for:</strong> "business rules", "time calculations", "shift validation"</p>
+                                </div>
+                            </div>
+
+                            <!-- Arrow -->
+                            <div class="flex justify-center">
+                                <div class="text-3xl text-slate-400">⬇️</div>
+                            </div>
+
+                            <!-- Layer 3: Storage -->
+                            <div class="flex items-center gap-4 p-4 bg-purple-50 rounded-lg border-2 border-purple-200">
+                                <div class="text-4xl">💾</div>
+                                <div class="flex-1">
+                                    <h3 class="font-bold text-purple-900 text-lg">3. Data Storage</h3>
+                                    <p class="text-purple-800">Safe place to store employee records, attendance history, and reports</p>
+                                    <p class="text-sm text-purple-700 mt-1"><strong>Look for:</strong> "database", "employee records", "backup", "data security"</p>
+                                </div>
+                            </div>
+
+                            <!-- Arrow -->
+                            <div class="flex justify-center">
+                                <div class="text-3xl text-slate-400">⬇️</div>
+                            </div>
+
+                            <!-- Layer 4: Connections -->
+                            <div class="flex items-center gap-4 p-4 bg-orange-50 rounded-lg border-2 border-orange-200">
+                                <div class="text-4xl">🔗</div>
+                                <div class="flex-1">
+                                    <h3 class="font-bold text-orange-900 text-lg">4. System Connections</h3>
+                                    <p class="text-orange-800">Links to payroll, HR systems, and user interfaces</p>
+                                    <p class="text-sm text-orange-700 mt-1"><strong>Look for:</strong> "payroll integration", "HR system", "employee portal", "manager dashboard"</p>
+                                </div>
+                            </div>
+
+                            <!-- Arrow -->
+                            <div class="flex justify-center">
+                                <div class="text-3xl text-slate-400">⬇️</div>
+                            </div>
+
+                            <!-- Layer 5: Users -->
+                            <div class="flex items-center gap-4 p-4 bg-red-50 rounded-lg border-2 border-red-200">
+                                <div class="text-4xl">👥</div>
+                                <div class="flex-1">
+                                    <h3 class="font-bold text-red-900 text-lg">5. User Interfaces</h3>
+                                    <p class="text-red-800">Apps and websites for employees, managers, and admins to view attendance</p>
+                                    <p class="text-sm text-red-700 mt-1"><strong>Look for:</strong> "employee app", "manager reports", "admin controls", "mobile access"</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Key Points -->
+                        <div class="mt-8 p-4 bg-slate-50 rounded-lg">
+                            <h4 class="font-bold text-slate-900 mb-3">🔑 Key Things to Remember:</h4>
+                            <ul class="space-y-2 text-sm text-slate-700">
+                                <li><strong>Security matters:</strong> Face data is sensitive - look for "encryption", "privacy", "compliance"</li>
+                                <li><strong>Integration is key:</strong> Must connect to existing payroll/HR systems</li>
+                                <li><strong>Think about growth:</strong> System should handle more employees/cameras</li>
+                                <li><strong>Real-time vs batch:</strong> Some things need instant updates, others can wait</li>
+                                <li><strong>Multiple user types:</strong> Different needs for employees, managers, admins</li>
+                            </ul>
                         </div>
                     </div>
 
