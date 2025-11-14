@@ -1,0 +1,760 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interview Evaluation Guide</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+    <div class="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+        <!-- Header -->
+        <div class="bg-white border-b border-slate-200 shadow-sm">
+            <div class="max-w-7xl mx-auto px-6 py-4">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h1 class="text-2xl font-bold text-slate-900">Interview Evaluation Guide</h1>
+                        <p class="text-sm text-slate-600 mt-1">Face Recognition Attendance System Design</p>
+                    </div>
+                    <div class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-semibold">
+                        HR EVALUATOR
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div class="bg-white border-b border-slate-200">
+            <div class="max-w-7xl mx-auto px-6">
+                <div class="flex gap-1">
+                    <button onclick="setActiveTab('overview')" class="flex items-center gap-2 px-6 py-4 font-medium text-sm transition-all text-blue-600 border-b-2 border-blue-600 bg-blue-50">
+                        <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>
+                        Overview
+                    </button>
+                    <button onclick="setActiveTab('architecture')" class="flex items-center gap-2 px-6 py-4 font-medium text-sm transition-all text-slate-600 hover:text-slate-900 hover:bg-slate-50">
+                        <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5V19A9 9 0 0 0 21 19V5"/><path d="M3 12A9 9 0 0 0 21 12"/></svg>
+                        Architecture Diagram
+                    </button>
+                    <button onclick="setActiveTab('rubric')" class="flex items-center gap-2 px-6 py-4 font-medium text-sm transition-all text-slate-600 hover:text-slate-900 hover:bg-slate-50">
+                        <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><path d="M21 12c-1 0-3-1-3-3s2-3 3-3 3 1 3 3-2 3-3 3"/><path d="M3 12c1 0 3-1 3-3s-2-3-3-3-3 1-3 3 2 3 3 3"/><path d="M12 3c-1 0-3 1-3 3s2 3 3 3 3-1 3-3-2-3-3-3"/></svg>
+                        Scoring Rubric
+                    </button>
+                    <button onclick="setActiveTab('redflags')" class="flex items-center gap-2 px-6 py-4 font-medium text-sm transition-all text-slate-600 hover:text-slate-900 hover:bg-slate-50">
+                        <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" rx="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>
+                        Red Flags
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content -->
+        <div class="max-w-7xl mx-auto px-6 py-8">
+            <!-- Overview Tab -->
+            <div id="overview" class="tab-content">
+                <div class="space-y-6">
+                    <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-8">
+                        <h2 class="text-xl font-bold text-slate-900 mb-4">Evaluation Overview</h2>
+                        <p class="text-slate-700 mb-6">
+                            This guide helps HR evaluate candidates' system design responses for the Face Recognition Attendance System.
+                            Strong candidates will demonstrate both technical depth and business acumen.
+                        </p>
+
+                        <div class="grid md:grid-cols-2 gap-6 mt-8">
+                            <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-6 border border-blue-200">
+                                <h3 class="font-bold text-blue-900 mb-3 flex items-center gap-2">
+                                    <svg class="w-5 h-5 text-blue-600" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22,4 12,14.01 9,11.01"/></svg>
+                                    KEYWORDS & PHRASES TO LISTEN FOR
+                                </h3>
+                                <ul class="space-y-2 text-sm text-blue-900">
+                                    <li><strong>Architecture terms:</strong> "microservices", "API gateway", "message queue", "event-driven", "layers"</li>
+                                    <li><strong>Security keywords:</strong> "encryption", "GDPR", "HIPAA", "biometric data protection", "access controls"</li>
+                                    <li><strong>Scalability phrases:</strong> "horizontal scaling", "load balancing", "caching", "database optimization"</li>
+                                    <li><strong>Integration mentions:</strong> "existing face recognition system", "HR system sync", "payroll integration"</li>
+                                    <li><strong>Data flow understanding:</strong> "data pipeline", "ETL process", "real-time processing"</li>
+                                    <li><strong>Business awareness:</strong> "attendance tracking", "shift management", "reporting dashboard"</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-gradient-to-br from-amber-50 to-amber-100 rounded-lg p-6 border border-amber-200">
+                                <h3 class="font-bold text-amber-900 mb-3 flex items-center gap-2">
+                                    <svg class="w-5 h-5 text-amber-600" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" rx="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
+                                    RED FLAG PHRASES TO WATCH FOR
+                                </h3>
+                                <ul class="space-y-2 text-sm text-amber-900">
+                                    <li><strong>Too vague:</strong> "It'll work somehow", "Magic happens", "AI will handle it"</li>
+                                    <li><strong>Missing security:</strong> Never mentions "encryption", "privacy", "compliance"</li>
+                                    <li><strong>Ignores existing systems:</strong> "Replace everything", "Start from scratch"</li>
+                                    <li><strong>Unrealistic tech:</strong> "Blockchain for everything", "Quantum computing", "Just use AI"</li>
+                                    <li><strong>No scale thinking:</strong> "For 100 employees", "Small company only"</li>
+                                    <li><strong>Business clueless:</strong> "Who cares about payroll?", "Just track faces"</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-8">
+                        <h2 class="text-xl font-bold text-slate-900 mb-4">Expected Components</h2>
+                        <p class="text-slate-600 mb-6">Strong candidates should address most of these architectural components:</p>
+
+                        <div class="grid md:grid-cols-3 gap-4">
+                            <div class="bg-slate-50 rounded-lg p-4 border border-slate-200">
+                                <div class="flex items-center gap-2 mb-3">
+                                    <svg class="w-5 h-5 text-blue-600" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5V19A9 9 0 0 0 21 19V5"/><path d="M3 12A9 9 0 0 0 21 12"/></svg>
+                                    <h3 class="font-semibold text-slate-900">Data Layer</h3>
+                                </div>
+                                <ul class="space-y-1 text-sm text-slate-600">
+                                    <li><strong>Listen for:</strong> "PostgreSQL/MySQL", "time-series database", "data retention policies"</li>
+                                    <li><strong>Good signs:</strong> Mentions backup, replication, data partitioning</li>
+                                    <li><strong>Red flags:</strong> "Just use Excel", no database mentioned</li>
+                                </ul>
+                            </div>
+                            <div class="bg-slate-50 rounded-lg p-4 border border-slate-200">
+                                <div class="flex items-center gap-2 mb-3">
+                                    <svg class="w-5 h-5 text-blue-600" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 0 1-7-7 7 7 0 0 1 7-7h8.5"/><path d="M14 7h6m-6 4h6m-6 4h6"/></svg>
+                                    <h3 class="font-semibold text-slate-900">Integration Layer</h3>
+                                </div>
+                                <ul class="space-y-1 text-sm text-slate-600">
+                                    <li><strong>Listen for:</strong> "REST APIs", "webhooks", "SAP/Oracle connectors"</li>
+                                    <li><strong>Good signs:</strong> Discusses existing HR/payroll systems integration</li>
+                                    <li><strong>Red flags:</strong> "We'll build everything new", ignores legacy systems</li>
+                                </ul>
+                            </div>
+                            <div class="bg-slate-50 rounded-lg p-4 border border-slate-200">
+                                <div class="flex items-center gap-2 mb-3">
+                                    <svg class="w-5 h-5 text-blue-600" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                                    <h3 class="font-semibold text-slate-900">Security Layer</h3>
+                                </div>
+                                <ul class="space-y-1 text-sm text-slate-600">
+                                    <li><strong>Listen for:</strong> "AES encryption", "RBAC", "audit logs", "GDPR compliance"</li>
+                                    <li><strong>Good signs:</strong> Addresses biometric data sensitivity, access controls</li>
+                                    <li><strong>Red flags:</strong> No mention of security, "plaintext storage"</li>
+                                </ul>
+                            </div>
+                            <div class="bg-slate-50 rounded-lg p-4 border border-slate-200">
+                                <div class="flex items-center gap-2 mb-3">
+                                    <svg class="w-5 h-5 text-blue-600" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13,2 3,14 12,14 11,22 21,10 12,10 13,2"/></svg>
+                                    <h3 class="font-semibold text-slate-900">Processing Layer</h3>
+                                </div>
+                                <ul class="space-y-1 text-sm text-slate-600">
+                                    <li><strong>Listen for:</strong> "Kafka/RabbitMQ", "business rules engine", "real-time processing"</li>
+                                    <li><strong>Good signs:</strong> Explains how attendance events are processed</li>
+                                    <li><strong>Red flags:</strong> No processing logic mentioned</li>
+                                </ul>
+                            </div>
+                            <div class="bg-slate-50 rounded-lg p-4 border border-slate-200">
+                                <div class="flex items-center gap-2 mb-3">
+                                    <svg class="w-5 h-5 text-blue-600" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><polyline points="14,10 18,6 22,10"/></svg>
+                                    <h3 class="font-semibold text-slate-900">Analytics Layer</h3>
+                                </div>
+                                <ul class="space-y-1 text-sm text-slate-600">
+                                    <li><strong>Listen for:</strong> "reporting dashboards", "anomaly detection", "data warehouse"</li>
+                                    <li><strong>Good signs:</strong> Mentions automated reports, analytics for managers</li>
+                                    <li><strong>Red flags:</strong> No reporting or analytics discussed</li>
+                                </ul>
+                            </div>
+                            <div class="bg-slate-50 rounded-lg p-4 border border-slate-200">
+                                <div class="flex items-center gap-2 mb-3">
+                                    <svg class="w-5 h-5 text-blue-600" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 2l-5 5"/><path d="M21 2l-1 1"/></svg>
+                                    <h3 class="font-semibold text-slate-900">User Interface</h3>
+                                </div>
+                                <ul class="space-y-1 text-sm text-slate-600">
+                                    <li><strong>Listen for:</strong> "admin portal", "mobile app", "employee dashboard"</li>
+                                    <li><strong>Good signs:</strong> Considers different user types (admin, employee, manager)</li>
+                                    <li><strong>Red flags:</strong> Only mentions technical interfaces, no user experience</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Architecture Tab -->
+            <div id="architecture" class="tab-content hidden">
+                <div class="space-y-6">
+                    <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-8">
+                        <h2 class="text-xl font-bold text-slate-900 mb-4">Reference Architecture Diagram</h2>
+                        <p class="text-slate-600 mb-6">
+                            This diagram shows a comprehensive system architecture. Candidates don't need to match this exactly,
+                            but should demonstrate similar thinking about components and data flow. Look for them to identify
+                            the key layers and how data moves between them.
+                        </p>
+
+                        <div class="bg-slate-50 rounded-lg p-6 border-2 border-slate-200">
+                            <div class="mb-4 p-3 bg-blue-50 rounded border-l-4 border-blue-400">
+                                <p class="text-sm text-blue-800"><strong>💡 How to evaluate:</strong> Does the candidate identify similar layers? Do they explain data flow between components? Do they consider integration points?</p>
+                            </div>
+                            <pre class="text-xs font-mono text-slate-800 overflow-x-auto whitespace-pre">┌─────────────────────────────────────────────────────────────────────────────┐
+│                          FACE RECOGNITION DEVICES                            │
+│                    (Existing Access Control System)                          │
+│         Camera 1    Camera 2    Camera 3    ...    Camera N                  │
+│                                                                             │
+│  📷 Hardware that generates face recognition events                        │
+│  🔗 Must integrate with existing cameras/systems                           │
+└────────────┬────────────────────────────────────────────────┬────────────────┘
+             │                                                 │
+             │ Facial Recognition Events                      │ Device Status
+             │ (Person ID, Timestamp, Location)               │ & Health Data
+             ▼                                                 ▼
+┌────────────────────────────────────────────────────────────────────────────┐
+│                        EVENT INGESTION LAYER                                │
+│  ┌─────────────────┐         ┌──────────────────┐                          │
+│  │  Message Queue  │         │  Event Validator │                          │
+│  │  (Kafka/RabbitMQ)│────────▶│  & Enrichment   │                          │
+│  │                 │         │                  │                          │
+│  │  📨 Async comms │         │  ✅ Data quality │                          │
+│  │  🔄 Buffering   │         │  🏷️ Add metadata │                          │
+│  └─────────────────┘         └──────────────────┘                          │
+└────────────────────────────────────┬───────────────────────────────────────┘
+                                     │
+                     ┌────────────────┴────────────────┐
+                     ▼                                 ▼
+┌───────────────────────────────┐    ┌──────────────────────────────────┐
+│   ATTENDANCE PROCESSING       │    │    REAL-TIME MONITORING          │
+│         ENGINE                │    │                                  │
+│  ┌─────────────────────────┐ │    │  ┌────────────────────────────┐ │
+│  │ Business Rules Engine   │ │    │  │  Dashboard Service         │ │
+│  │ - Check-in/out logic    │ │    │  │  - Live attendance view    │ │
+│  │ - Break detection       │ │    │  │  - Alert notifications     │ │
+│  │ - Shift validation      │ │    │  │  - Anomaly detection       │ │
+│  │ - Overtime calculation  │ │    │  └────────────────────────────┘ │
+│  └─────────────────────────┘ │    │                                  │
+│                               │    │  📊 Real-time visibility       │
+│  ⚙️ Core business logic       │    │  🚨 Proactive alerts           │
+└──────────────┬────────────────┘    └──────────────────────────────────┘
+               │
+               ▼
+┌────────────────────────────────────────────────────────────────────────────┐
+│                          DATA PERSISTENCE LAYER                             │
+│  ┌──────────────────────┐  ┌─────────────────────┐  ┌──────────────────┐  │
+│  │  Relational DB       │  │  Time-Series DB     │  │  Data Warehouse  │  │
+│  │  (PostgreSQL/MySQL)  │  │  (InfluxDB/TimescaleDB)│  │  (Snowflake/     │  │
+│  │                      │  │                     │  │   Redshift)      │  │
+│  │  - Employee records  │  │  - Raw events       │  │  - Historical    │  │
+│  │  - Shift schedules   │  │  - Metrics          │  │    analytics     │  │
+│  │  - Policies          │  │  - Device logs      │  │  - Compliance    │  │
+│  │                      │  │                     │  │                  │  │
+│  │  👥 Structured data  │  │  📈 Time-based data │  │  📊 Analytics     │  │
+│  └──────────────────────┘  └─────────────────────┘  └──────────────────┘  │
+└────────────────────┬───────────────────────────────────────────────────────┘
+                     │
+                     ▼
+┌────────────────────────────────────────────────────────────────────────────┐
+│                       INTEGRATION & API LAYER                               │
+│  ┌─────────────────┐  ┌──────────────────┐  ┌─────────────────────────┐   │
+│  │  REST API       │  │  GraphQL API     │  │  Webhook Service        │   │
+│  │  - CRUD ops     │  │  - Flexible      │  │  - External triggers    │   │
+│  │  - Batch ops    │  │    queries       │  │  - Event subscriptions  │   │
+│  │                 │  │                  │  │                          │   │
+│  │  🔌 Standard APIs│  │  📋 Efficient   │  │  🔔 Push notifications   │
+│  └─────────────────┘  └──────────────────┘  └─────────────────────────┘   │
+└────────────┬───────────────────────┬──────────────────────────────────────┘
+             │                       │
+             ▼                       ▼
+┌──────────────────────┐    ┌────────────────────────────────────────────┐
+│  EXTERNAL SYSTEMS    │    │       USER INTERFACES                      │
+│                      │    │                                            │
+│  ┌────────────────┐ │    │  ┌──────────────┐    ┌─────────────────┐  │
+│  │ Payroll System │◀┼────┼──│ Admin Portal │    │ Employee Portal │  │
+│  │ (ADP, Workday) │ │    │  │ - Reports    │    │ - Self-service  │  │
+│  └────────────────┘ │    │  │ - Analytics  │    │ - Time cards    │  │
+│                      │    │  │ - Config     │    │ - Requests      │  │
+│  ┌────────────────┐ │    │  └──────────────┘    └─────────────────┘  │
+│  │ HR System      │◀┼────┤                                            │
+│  │ (SAP, Oracle)  │ │    │  ┌──────────────┐    ┌─────────────────┐  │
+│  └────────────────┘ │    │  │ Manager View │    │ Mobile App      │  │
+│                      │    │  │ - Team data  │    │ - Check status  │  │
+│  ┌────────────────┐ │    │  │ - Approvals  │    │ - Notifications │  │
+│  │ Access Control │◀┼────┤  └──────────────┘    └─────────────────┘  │
+│  │ System (Legacy)│ │    │                                            │
+│  └────────────────┘ │    └────────────────────────────────────────────┘
+│                      │
+│  🔗 Must connect to  │
+│  existing systems!   │
+└──────────────────────┘
+
+┌────────────────────────────────────────────────────────────────────────────┐
+│                     CROSS-CUTTING CONCERNS                                  │
+│                                                                             │
+│  🔒 Security: Encryption at rest/transit, RBAC, Audit logs                 │
+│  📊 Monitoring: Prometheus, Grafana, ELK Stack                             │
+│  🔄 Backup: Automated backups, Disaster recovery, Geographic redundancy    │
+│  📱 Notifications: Email, SMS, Push notifications                          │
+│  ⚖️  Compliance: GDPR, HIPAA, SOC2, Data retention policies               │
+│                                                                             │
+│  🛡️  Don't forget these apply to EVERY layer!                             │
+└────────────────────────────────────────────────────────────────────────────┘</pre>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-8">
+                        <h2 class="text-xl font-bold text-slate-900 mb-4">Key Data Flows</h2>
+                        <div class="space-y-4">
+                            <div class="bg-slate-50 rounded-lg p-6 border border-slate-200">
+                                <h3 class="font-semibold text-slate-900 mb-3">Attendance Event Flow</h3>
+                                <div class="space-y-2">
+                                    <div class="flex items-center gap-3 text-sm text-slate-700">
+                                        <span class="bg-blue-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">1</span>
+                                        <span>Face recognized at door → Event generated</span>
+                                    </div>
+                                    <div class="flex items-center gap-3 text-sm text-slate-700">
+                                        <span class="bg-blue-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">2</span>
+                                        <span>Event published to message queue</span>
+                                    </div>
+                                    <div class="flex items-center gap-3 text-sm text-slate-700">
+                                        <span class="bg-blue-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">3</span>
+                                        <span>Business rules engine processes event</span>
+                                    </div>
+                                    <div class="flex items-center gap-3 text-sm text-slate-700">
+                                        <span class="bg-blue-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">4</span>
+                                        <span>Attendance record created/updated in database</span>
+                                    </div>
+                                    <div class="flex items-center gap-3 text-sm text-slate-700">
+                                        <span class="bg-blue-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">5</span>
+                                        <span>Real-time dashboard updated</span>
+                                    </div>
+                                    <div class="flex items-center gap-3 text-sm text-slate-700">
+                                        <span class="bg-blue-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">6</span>
+                                        <span>Notifications sent if needed</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-slate-50 rounded-lg p-6 border border-slate-200">
+                                <h3 class="font-semibold text-slate-900 mb-3">Payroll Integration Flow</h3>
+                                <div class="space-y-2">
+                                    <div class="flex items-center gap-3 text-sm text-slate-700">
+                                        <span class="bg-blue-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">1</span>
+                                        <span>End of pay period trigger</span>
+                                    </div>
+                                    <div class="flex items-center gap-3 text-sm text-slate-700">
+                                        <span class="bg-blue-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">2</span>
+                                        <span>Attendance data aggregated by employee</span>
+                                    </div>
+                                    <div class="flex items-center gap-3 text-sm text-slate-700">
+                                        <span class="bg-blue-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">3</span>
+                                        <span>Business rules applied (overtime, breaks, etc.)</span>
+                                    </div>
+                                    <div class="flex items-center gap-3 text-sm text-slate-700">
+                                        <span class="bg-blue-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">4</span>
+                                        <span>Data formatted for payroll system</span>
+                                    </div>
+                                    <div class="flex items-center gap-3 text-sm text-slate-700">
+                                        <span class="bg-blue-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">5</span>
+                                        <span>Secure transfer to payroll via API</span>
+                                    </div>
+                                    <div class="flex items-center gap-3 text-sm text-slate-700">
+                                        <span class="bg-blue-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">6</span>
+                                        <span>Reconciliation and audit trail</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-slate-50 rounded-lg p-6 border border-slate-200">
+                                <h3 class="font-semibold text-slate-900 mb-3">Analytics & Reporting Flow</h3>
+                                <div class="space-y-2">
+                                    <div class="flex items-center gap-3 text-sm text-slate-700">
+                                        <span class="bg-blue-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">1</span>
+                                        <span>Historical data extracted from databases</span>
+                                    </div>
+                                    <div class="flex items-center gap-3 text-sm text-slate-700">
+                                        <span class="bg-blue-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">2</span>
+                                        <span>ETL process loads data warehouse</span>
+                                    </div>
+                                    <div class="flex items-center gap-3 text-sm text-slate-700">
+                                        <span class="bg-blue-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">3</span>
+                                        <span>Analytics engine processes data</span>
+                                    </div>
+                                    <div class="flex items-center gap-3 text-sm text-slate-700">
+                                        <span class="bg-blue-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">4</span>
+                                        <span>Reports generated on schedule</span>
+                                    </div>
+                                    <div class="flex items-center gap-3 text-sm text-slate-700">
+                                        <span class="bg-blue-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">5</span>
+                                        <span>Dashboards updated with insights</span>
+                                    </div>
+                                    <div class="flex items-center gap-3 text-sm text-slate-700">
+                                        <span class="bg-blue-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">6</span>
+                                        <span>Managers receive automated reports</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rubric Tab -->
+            <div id="rubric" class="tab-content hidden">
+                <div class="space-y-6">
+                    <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-8">
+                        <h2 class="text-xl font-bold text-slate-900 mb-4">Scoring Rubric</h2>
+                        <p class="text-slate-600 mb-6">
+                            Rate each category on a scale of 1-5. Multiply by the weight to get the weighted score. Total possible: 5.0
+                        </p>
+
+                        <div class="space-y-8">
+                            <div class="border-b border-slate-200 pb-8 last:border-0">
+                                <div class="flex items-center justify-between mb-4">
+                                    <h3 class="text-lg font-bold text-slate-900">System Architecture</h3>
+                                    <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-semibold">Weight: 30%</span>
+                                </div>
+
+                                <div class="space-y-3">
+                                    <div class="bg-slate-50 rounded-lg p-4 border border-slate-200">
+                                        <div class="flex items-start gap-3">
+                                            <div class="w-10 h-10 rounded-lg flex items-center justify-center font-bold text-lg flex-shrink-0 bg-green-100 text-green-800">5</div>
+                                            <p class="text-sm text-slate-700 mt-2">Comprehensive architecture with all major components clearly defined and connected. Shows understanding of layers, separation of concerns, and scalability.</p>
+                                        </div>
+                                    </div>
+                                    <div class="bg-slate-50 rounded-lg p-4 border border-slate-200">
+                                        <div class="flex items-start gap-3">
+                                            <div class="w-10 h-10 rounded-lg flex items-center justify-center font-bold text-lg flex-shrink-0 bg-blue-100 text-blue-800">4</div>
+                                            <p class="text-sm text-slate-700 mt-2">Solid architecture covering most components. Minor gaps in some areas but overall structure is sound.</p>
+                                        </div>
+                                    </div>
+                                    <div class="bg-slate-50 rounded-lg p-4 border border-slate-200">
+                                        <div class="flex items-start gap-3">
+                                            <div class="w-10 h-10 rounded-lg flex items-center justify-center font-bold text-lg flex-shrink-0 bg-yellow-100 text-yellow-800">3</div>
+                                            <p class="text-sm text-slate-700 mt-2">Basic architecture outlined. Missing some key components or unclear how pieces connect.</p>
+                                        </div>
+                                    </div>
+                                    <div class="bg-slate-50 rounded-lg p-4 border border-slate-200">
+                                        <div class="flex items-start gap-3">
+                                            <div class="w-10 h-10 rounded-lg flex items-center justify-center font-bold text-lg flex-shrink-0 bg-orange-100 text-orange-800">2</div>
+                                            <p class="text-sm text-slate-700 mt-2">Incomplete architecture. Major components missing or poorly defined.</p>
+                                        </div>
+                                    </div>
+                                    <div class="bg-slate-50 rounded-lg p-4 border border-slate-200">
+                                        <div class="flex items-start gap-3">
+                                            <div class="w-10 h-10 rounded-lg flex items-center justify-center font-bold text-lg flex-shrink-0 bg-red-100 text-red-800">1</div>
+                                            <p class="text-sm text-slate-700 mt-2">Minimal or no architectural thinking. Just lists technologies without structure.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="border-b border-slate-200 pb-8 last:border-0">
+                                <div class="flex items-center justify-between mb-4">
+                                    <h3 class="text-lg font-bold text-slate-900">Integration & Data Flow</h3>
+                                    <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-semibold">Weight: 20%</span>
+                                </div>
+
+                                <div class="space-y-3">
+                                    <div class="bg-slate-50 rounded-lg p-4 border border-slate-200">
+                                        <div class="flex items-start gap-3">
+                                            <div class="w-10 h-10 rounded-lg flex items-center justify-center font-bold text-lg flex-shrink-0 bg-green-100 text-green-800">5</div>
+                                            <p class="text-sm text-slate-700 mt-2">Clear explanation of how data flows through system. Addresses integration with existing access control, HR, and payroll systems with specific approaches.</p>
+                                        </div>
+                                    </div>
+                                    <div class="bg-slate-50 rounded-lg p-4 border border-slate-200">
+                                        <div class="flex items-start gap-3">
+                                            <div class="w-10 h-10 rounded-lg flex items-center justify-center font-bold text-lg flex-shrink-0 bg-blue-100 text-blue-800">4</div>
+                                            <p class="text-sm text-slate-700 mt-2">Good understanding of integration needs. Describes main data flows and integration points.</p>
+                                        </div>
+                                    </div>
+                                    <div class="bg-slate-50 rounded-lg p-4 border border-slate-200">
+                                        <div class="flex items-start gap-3">
+                                            <div class="w-10 h-10 rounded-lg flex items-center justify-center font-bold text-lg flex-shrink-0 bg-yellow-100 text-yellow-800">3</div>
+                                            <p class="text-sm text-slate-700 mt-2">Basic mention of integrations. Limited detail on how data moves between systems.</p>
+                                        </div>
+                                    </div>
+                                    <div class="bg-slate-50 rounded-lg p-4 border border-slate-200">
+                                        <div class="flex items-start gap-3">
+                                            <div class="w-10 h-10 rounded-lg flex items-center justify-center font-bold text-lg flex-shrink-0 bg-orange-100 text-orange-800">2</div>
+                                            <p class="text-sm text-slate-700 mt-2">Vague about integrations. May ignore existing system constraints.</p>
+                                        </div>
+                                    </div>
+                                    <div class="bg-slate-50 rounded-lg p-4 border border-slate-200">
+                                        <div class="flex items-start gap-3">
+                                            <div class="w-10 h-10 rounded-lg flex items-center justify-center font-bold text-lg flex-shrink-0 bg-red-100 text-red-800">1</div>
+                                            <p class="text-sm text-slate-700 mt-2">No integration strategy. Treats as isolated system.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="border-b border-slate-200 pb-8 last:border-0">
+                                <div class="flex items-center justify-between mb-4">
+                                    <h3 class="text-lg font-bold text-slate-900">Security & Privacy</h3>
+                                    <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-semibold">Weight: 20%</span>
+                                </div>
+
+                                <div class="space-y-3">
+                                    <div class="bg-slate-50 rounded-lg p-4 border border-slate-200">
+                                        <div class="flex items-start gap-3">
+                                            <div class="w-10 h-10 rounded-lg flex items-center justify-center font-bold text-lg flex-shrink-0 bg-green-100 text-green-800">5</div>
+                                            <p class="text-sm text-slate-700 mt-2">Comprehensive security approach covering biometric data encryption, access controls, audit trails, and compliance (GDPR, HIPAA, etc.). Understands sensitivity of biometric data.</p>
+                                        </div>
+                                    </div>
+                                    <div class="bg-slate-50 rounded-lg p-4 border border-slate-200">
+                                        <div class="flex items-start gap-3">
+                                            <div class="w-10 h-10 rounded-lg flex items-center justify-center font-bold text-lg flex-shrink-0 bg-blue-100 text-blue-800">4</div>
+                                            <p class="text-sm text-slate-700 mt-2">Good security awareness. Covers main concerns like encryption and access controls.</p>
+                                        </div>
+                                    </div>
+                                    <div class="bg-slate-50 rounded-lg p-4 border border-slate-200">
+                                        <div class="flex items-start gap-3">
+                                            <div class="w-10 h-10 rounded-lg flex items-center justify-center font-bold text-lg flex-shrink-0 bg-yellow-100 text-yellow-800">3</div>
+                                            <p class="text-sm text-slate-700 mt-2">Mentions security but lacks depth. May miss biometric-specific concerns.</p>
+                                        </div>
+                                    </div>
+                                    <div class="bg-slate-50 rounded-lg p-4 border border-slate-200">
+                                        <div class="flex items-start gap-3">
+                                            <div class="w-10 h-10 rounded-lg flex items-center justify-center font-bold text-lg flex-shrink-0 bg-orange-100 text-orange-800">2</div>
+                                            <p class="text-sm text-slate-700 mt-2">Minimal security consideration. May only mention general security without specifics.</p>
+                                        </div>
+                                    </div>
+                                    <div class="bg-slate-50 rounded-lg p-4 border border-slate-200">
+                                        <div class="flex items-start gap-3">
+                                            <div class="w-10 h-10 rounded-lg flex items-center justify-center font-bold text-lg flex-shrink-0 bg-red-100 text-red-800">1</div>
+                                            <p class="text-sm text-slate-700 mt-2">Security not addressed or treated as afterthought.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="border-b border-slate-200 pb-8 last:border-0">
+                                <div class="flex items-center justify-between mb-4">
+                                    <h3 class="text-lg font-bold text-slate-900">Scalability & Performance</h3>
+                                    <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-semibold">Weight: 15%</span>
+                                </div>
+
+                                <div class="space-y-3">
+                                    <div class="bg-slate-50 rounded-lg p-4 border border-slate-200">
+                                        <div class="flex items-start gap-3">
+                                            <div class="w-10 h-10 rounded-lg flex items-center justify-center font-bold text-lg flex-shrink-0 bg-green-100 text-green-800">5</div>
+                                            <p class="text-sm text-slate-700 mt-2">Discusses horizontal scaling, load balancing, caching strategies, and database optimization. Considers growth scenarios.</p>
+                                        </div>
+                                    </div>
+                                    <div class="bg-slate-50 rounded-lg p-4 border border-slate-200">
+                                        <div class="flex items-start gap-3">
+                                            <div class="w-10 h-10 rounded-lg flex items-center justify-center font-bold text-lg flex-shrink-0 bg-blue-100 text-blue-800">4</div>
+                                            <p class="text-sm text-slate-700 mt-2">Addresses scalability with specific approaches. Considers performance implications.</p>
+                                        </div>
+                                    </div>
+                                    <div class="bg-slate-50 rounded-lg p-4 border border-slate-200">
+                                        <div class="flex items-start gap-3">
+                                            <div class="w-10 h-10 rounded-lg flex items-center justify-center font-bold text-lg flex-shrink-0 bg-yellow-100 text-yellow-800">3</div>
+                                            <p class="text-sm text-slate-700 mt-2">Mentions scalability but lacks concrete strategies.</p>
+                                        </div>
+                                    </div>
+                                    <div class="bg-slate-50 rounded-lg p-4 border border-slate-200">
+                                        <div class="flex items-start gap-3">
+                                            <div class="w-10 h-10 rounded-lg flex items-center justify-center font-bold text-lg flex-shrink-0 bg-orange-100 text-orange-800">2</div>
+                                            <p class="text-sm text-slate-700 mt-2">Minimal discussion of scale or performance.</p>
+                                        </div>
+                                    </div>
+                                    <div class="bg-slate-50 rounded-lg p-4 border border-slate-200">
+                                        <div class="flex items-start gap-3">
+                                            <div class="w-10 h-10 rounded-lg flex items-center justify-center font-bold text-lg flex-shrink-0 bg-red-100 text-red-800">1</div>
+                                            <p class="text-sm text-slate-700 mt-2">No consideration of scalability.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="border-b border-slate-200 pb-8 last:border-0">
+                                <div class="flex items-center justify-between mb-4">
+                                    <h3 class="text-lg font-bold text-slate-900">Business Requirements</h3>
+                                    <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-semibold">Weight: 15%</span>
+                                </div>
+
+                                <div class="space-y-3">
+                                    <div class="bg-slate-50 rounded-lg p-4 border border-slate-200">
+                                        <div class="flex items-start gap-3">
+                                            <div class="w-10 h-10 rounded-lg flex items-center justify-center font-bold text-lg flex-shrink-0 bg-green-100 text-green-800">5</div>
+                                            <p class="text-sm text-slate-700 mt-2">Addresses all key requirements: attendance capture, reporting, analytics, payroll integration. Shows understanding of business value and user needs.</p>
+                                        </div>
+                                    </div>
+                                    <div class="bg-slate-50 rounded-lg p-4 border border-slate-200">
+                                        <div class="flex items-start gap-3">
+                                            <div class="w-10 h-10 rounded-lg flex items-center justify-center font-bold text-lg flex-shrink-0 bg-blue-100 text-blue-800">4</div>
+                                            <p class="text-sm text-slate-700 mt-2">Covers most business requirements with practical solutions.</p>
+                                        </div>
+                                    </div>
+                                    <div class="bg-slate-50 rounded-lg p-4 border border-slate-200">
+                                        <div class="flex items-start gap-3">
+                                            <div class="w-10 h-10 rounded-lg flex items-center justify-center font-bold text-lg flex-shrink-0 bg-yellow-100 text-yellow-800">3</div>
+                                            <p class="text-sm text-slate-700 mt-2">Addresses some requirements but misses important aspects.</p>
+                                        </div>
+                                    </div>
+                                    <div class="bg-slate-50 rounded-lg p-4 border border-slate-200">
+                                        <div class="flex items-start gap-3">
+                                            <div class="w-10 h-10 rounded-lg flex items-center justify-center font-bold text-lg flex-shrink-0 bg-orange-100 text-orange-800">2</div>
+                                            <p class="text-sm text-slate-700 mt-2">Limited alignment with stated business needs.</p>
+                                        </div>
+                                    </div>
+                                    <div class="bg-slate-50 rounded-lg p-4 border border-slate-200">
+                                        <div class="flex items-start gap-3">
+                                            <div class="w-10 h-10 rounded-lg flex items-center justify-center font-bold text-lg flex-shrink-0 bg-red-100 text-red-800">1</div>
+                                            <p class="text-sm text-slate-700 mt-2">Ignores business requirements or focuses only on technical aspects.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl shadow-sm border border-blue-200 p-8">
+ class="text-lg font-bold text-blue-900 mb-4">Overall Scoring Guidelines</h3>
+                        <div class="grid md:grid-cols-3 gap-4">
+                            <div class="bg-white rounded-lg p-4 border border-blue-200">
+                                <div class="text-2xl font-bold text-green-600 mb-2">4.0 - 5.0</div>
+                                <div class="font-semibold text-slate-900 mb-2">Strong Hire</div>
+                                <p class="text-sm text-slate-600">Demonstrates excellent system design skills. Ready for senior technical roles.</p>
+                            </div>
+                            <div class="bg-white rounded-lg p-4 border border-blue-200">
+                                <div class="text-2xl font-bold text-blue-600 mb-2">3.0 - 3.9</div>
+                                <div class="font-semibold text-slate-900 mb-2">Hire</div>
+                                <p class="text-sm text-slate-600">Solid technical foundation. Good fit for mid-level roles with room to grow.</p>
+                            </div>
+                            <div class="bg-white rounded-lg p-4 border border-blue-200">
+                                <div class="text-2xl font-bold text-orange-600 mb-2">Below 3.0</div>
+                                <div class="font-semibold text-slate-900 mb-2">No Hire</div>
+                                <p class="text-sm text-slate-600">Insufficient system design capabilities for the role requirements.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Red Flags Tab -->
+            <div id="redflags" class="tab-content hidden">
+                <div class="space-y-6">
+                    <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-8">
+                        <h2 class="text-xl font-bold text-slate-900 mb-6">🚨 CRITICAL RED FLAGS (Auto-Reject)</h2>
+                        <div class="space-y-4">
+                            <div class="border-l-4 rounded-lg p-4 bg-red-50 border-red-500">
+                                <h3 class="font-bold mb-2 text-red-900">❌ "Security? What security?"</h3>
+                                <p class="text-sm text-red-800"><strong>What to listen for:</strong> Candidate never mentions "encryption", "privacy", "GDPR", "HIPAA", or "biometric protection". <em>Why critical:</em> Face recognition data is highly sensitive - this shows dangerous lack of awareness.</p>
+                            </div>
+                            <div class="border-l-4 rounded-lg p-4 bg-red-50 border-red-500">
+                                <h3 class="font-bold mb-2 text-red-900">❌ "Let's rebuild everything from scratch"</h3>
+                                <p class="text-sm text-red-800"><strong>What to listen for:</strong> "Replace the existing system", "Start over", "The current setup is outdated". <em>Why critical:</em> Question explicitly asks to integrate with existing face recognition - ignoring this shows they can't read requirements.</p>
+                            </div>
+                            <div class="border-l-4 rounded-lg p-4 bg-red-50 border-red-500">
+                                <h3 class="font-bold mb-2 text-red-900">❌ "Store face data in plain text"</h3>
+                                <p class="text-sm text-red-800"><strong>What to listen for:</strong> No mention of encryption, "save the templates directly", "database will handle security". <em>Why critical:</em> Major legal and ethical violation - biometric data must be encrypted.</p>
+                            </div>
+                            <div class="border-l-4 rounded-lg p-4 bg-red-50 border-red-500">
+                                <h3 class="font-bold mb-2 text-red-900">❌ "Compliance? Never heard of it"</h3>
+                                <p class="text-sm text-red-800"><strong>What to listen for:</strong> No mention of "GDPR", "data protection", "privacy laws", "audit trails". <em>Why critical:</em> Healthcare/HR systems must comply with strict regulations.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-8">
+                        <h2 class="text-xl font-bold text-slate-900 mb-6">⚠️ SIGNIFICANT CONCERNS (Major Deductions)</h2>
+                        <div class="space-y-4">
+                            <div class="border-l-4 rounded-lg p-4 bg-orange-50 border-orange-500">
+                                <h3 class="font-bold mb-2 text-orange-900">⚠️ "Blockchain solves everything!"</h3>
+                                <p class="text-sm text-orange-800"><strong>What to listen for:</strong> "Use blockchain for attendance", "AI/ML will handle all logic", "Microservices because it's modern". <em>Why concerning:</em> Throws buzzwords without explaining why or trade-offs.</p>
+                            </div>
+                            <div class="border-l-4 rounded-lg p-4 bg-orange-50 border-orange-500">
+                                <h3 class="font-bold mb-2 text-orange-900">⚠️ "Data? What data?"</h3>
+                                <p class="text-sm text-orange-800"><strong>What to listen for:</strong> No mention of databases, data models, or storage strategy. <em>Why concerning:</em> Core system component - vague answers indicate shallow technical knowledge.</p>
+                            </div>
+                            <div class="border-l-4 rounded-lg p-4 bg-orange-50 border-orange-500">
+                                <h3 class="font-bold mb-2 text-orange-900">⚠️ "What could possibly go wrong?"</h3>
+                                <p class="text-sm text-orange-800"><strong>What to listen for:</strong> No discussion of error handling, network failures, or edge cases. <em>Why concerning:</em> Real systems break - no mention shows inexperience.</p>
+                            </div>
+                            <div class="border-l-4 rounded-lg p-4 bg-orange-50 border-orange-500">
+                                <h3 class="font-bold mb-2 text-orange-900">⚠️ "This is just for a small company"</h3>
+                                <p class="text-sm text-orange-800"><strong>What to listen for:</strong> "Only 100 employees", "No need to scale", "Simple solution". <em>Why concerning:</em> Systems grow - must design for scale from day one.</p>
+                            </div>
+                            <div class="border-l-4 rounded-lg p-4 bg-orange-50 border-orange-500">
+                                <h3 class="font-bold mb-2 text-orange-900">⚠️ "Done in 2 weeks!"</h3>
+                                <p class="text-sm text-orange-800"><strong>What to listen for:</strong> Unrealistic timelines, "quick project", "simple implementation". <em>Why concerning:</em> Shows no understanding of real-world complexity.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-8">
+                        <h2 class="text-xl font-bold text-slate-900 mb-6">⚡ MINOR CONCERNS (Small Deductions)</h2>
+                        <div class="space-y-4">
+                            <div class="border-l-4 rounded-lg p-4 bg-yellow-50 border-yellow-500">
+                                <h3 class="font-bold mb-2 text-yellow-900">⚡ "Technology agnostic" but vague</h3>
+                                <p class="text-sm text-yellow-800"><strong>What to listen for:</strong> Says "could use anything" without explaining trade-offs between options. <em>Why minor:</em> Shows thinking but lacks depth.</p>
+                            </div>
+                            <div class="border-l-4 rounded-lg p-4 bg-yellow-50 border-yellow-500">
+                                <h3 class="font-bold mb-2 text-yellow-900">⚡ "Users? Who cares about users?"</h3>
+                                <p class="text-sm text-yellow-800"><strong>What to listen for:</strong> Only technical discussion, no mention of employee/manager experience. <em>Why minor:</em> User experience matters for adoption.</p>
+                            </div>
+                            <div class="border-l-4 rounded-lg p-4 bg-yellow-50 border-yellow-500">
+                                <h3 class="font-bold mb-2 text-yellow-900">⚡ "If it works, ship it!"</h3>
+                                <p class="text-sm text-yellow-800"><strong>What to listen for:</strong> No mention of monitoring, logging, or production support. <em>Why minor:</em> Operations experience is valuable.</p>
+                            </div>
+                            <div class="border-l-4 rounded-lg p-4 bg-yellow-50 border-yellow-500">
+                                <h3 class="font-bold mb-2 text-yellow-900">⚡ Silent treatment</h3>
+                                <p class="text-sm text-yellow-800"><strong>What to listen for:</strong> Candidate doesn't ask any clarifying questions about requirements. <em>Why minor:</em> Good designers gather requirements first.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl shadow-sm border border-green-200 p-8">
+                        <h2 class="text-xl font-bold text-green-900 mb-4">✨ STRONG POSITIVE INDICATORS (Green Flags)</h2>
+                        <p class="text-green-800 mb-6">These phrases show excellent system design skills - mark them up!</p>
+                        <div class="grid md:grid-cols-2 gap-3">
+                            <div class="bg-white rounded-lg p-4 border border-green-200 flex items-start gap-3">
+                                <span class="text-2xl text-green-600">🎯</span>
+                                <span class="text-sm text-slate-700 mt-1"><strong>"How many users/doors/locations?"</strong> - Asks smart clarifying questions</span>
+                            </div>
+                            <div class="bg-white rounded-lg p-4 border border-green-200 flex items-start gap-3">
+                                <span class="text-2xl text-green-600">⚖️</span>
+                                <span class="text-sm text-slate-700 mt-1"><strong>"Trade-off between X and Y..."</strong> - Discusses alternatives thoughtfully</span>
+                            </div>
+                            <div class="bg-white rounded-lg p-4 border border-green-200 flex items-start gap-3">
+                                <span class="text-2xl text-green-600">🔧</span>
+                                <span class="text-sm text-slate-700 mt-1"><strong>"I'd use PostgreSQL because..."</strong> - Chooses tech with clear reasoning</span>
+                            </div>
+                            <div class="bg-white rounded-lg p-4 border border-green-200 flex items-start gap-3">
+                                <span class="text-2xl text-green-600">📊</span>
+                                <span class="text-sm text-slate-700 mt-1"><strong>"We'll need monitoring with..."</strong> - Considers operations and maintenance</span>
+                            </div>
+                            <div class="bg-white rounded-lg p-4 border border-green-200 flex items-start gap-3">
+                                <span class="text-2xl text-green-600">💼</span>
+                                <span class="text-sm text-slate-700 mt-1"><strong>"Employees need self-service portals..."</strong> - Addresses business needs</span>
+                            </div>
+                            <div class="bg-white rounded-lg p-4 border border-green-200 flex items-start gap-3">
+                                <span class="text-2xl text-green-600">⏰</span>
+                                <span class="text-sm text-slate-700 mt-1"><strong>"Given budget constraints..."</strong> - Acknowledges real-world limitations</span>
+                            </div>
+                            <div class="bg-white rounded-lg p-4 border border-green-200 flex items-start gap-3">
+                                <span class="text-2xl text-green-600">🧪</span>
+                                <span class="text-sm text-slate-700 mt-1"><strong>"Testing biometric accuracy..."</strong> - Considers quality and validation</span>
+                            </div>
+                            <div class="bg-white rounded-lg p-4 border border-green-200 flex items-start gap-3">
+                                <span class="text-2xl text-green-600">🗂️</span>
+                                <span class="text-sm text-slate-700 mt-1"><strong>"Data retention for 7 years..."</strong> - Thinks about data lifecycle</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let activeTab = 'overview';
+
+        function setActiveTab(tabId) {
+            activeTab = tabId;
+            updateDisplay();
+        }
+
+        function updateDisplay() {
+            const tabs = document.querySelectorAll('.tab-content');
+            tabs.forEach(tab => {
+                tab.classList.add('hidden');
+            });
+            document.getElementById(activeTab).classList.remove('hidden');
+
+            const buttons = document.querySelectorAll('button[onclick^="setActiveTab"]');
+            buttons.forEach(button => {
+                button.classList.remove('text-blue-600', 'border-b-2', 'border-blue-600', 'bg-blue-50');
+                button.classList.add('text-slate-600', 'hover:text-slate-900', 'hover:bg-slate-50');
+            });
+            const activeButton = document.querySelector(`button[onclick="setActiveTab('${activeTab}')"]`);
+            activeButton.classList.add('text-blue-600', 'border-b-2', 'border-blue-600', 'bg-blue-50');
+            activeButton.classList.remove('text-slate-600', 'hover:text-slate-900', 'hover:bg-slate-50');
+        }
+
+        // Initialize
+        updateDisplay();
+    </script>
+</body>
+</html>
+                        <h3

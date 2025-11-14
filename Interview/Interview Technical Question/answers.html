@@ -1,0 +1,519 @@
+import React, { useState } from 'react';
+import { FileText, CheckCircle, AlertCircle, Users, Database, Shield, BarChart3, Cloud, Zap } from 'lucide-react';
+
+const EvaluationGuide = () => {
+  const [activeTab, setActiveTab] = useState('overview');
+
+  const tabs = [
+    { id: 'overview', label: 'Overview', icon: FileText },
+    { id: 'architecture', label: 'Architecture Diagram', icon: Database },
+    { id: 'rubric', label: 'Scoring Rubric', icon: CheckCircle },
+    { id: 'redflags', label: 'Red Flags', icon: AlertCircle },
+  ];
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+      {/* Header */}
+      <div className="bg-white border-b border-slate-200 shadow-sm">
+        <div className="max-w-7xl mx-auto px-6 py-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-2xl font-bold text-slate-900">Interview Evaluation Guide</h1>
+              <p className="text-sm text-slate-600 mt-1">Face Recognition Attendance System Design</p>
+            </div>
+            <div className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-semibold">
+              HR EVALUATOR
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Navigation Tabs */}
+      <div className="bg-white border-b border-slate-200">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="flex gap-1">
+            {tabs.map((tab) => {
+              const Icon = tab.icon;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`flex items-center gap-2 px-6 py-4 font-medium text-sm transition-all ${
+                    activeTab === tab.id
+                      ? 'text-blue-600 border-b-2 border-blue-600 bg-blue-50'
+                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+                  }`}
+                >
+                  <Icon size={18} />
+                  {tab.label}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+
+      {/* Content */}
+      <div className="max-w-7xl mx-auto px-6 py-8">
+        {activeTab === 'overview' && <OverviewTab />}
+        {activeTab === 'architecture' && <ArchitectureTab />}
+        {activeTab === 'rubric' && <RubricTab />}
+        {activeTab === 'redflags' && <RedFlagsTab />}
+      </div>
+    </div>
+  );
+};
+
+const OverviewTab = () => {
+  return (
+    <div className="space-y-6">
+      <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-8">
+        <h2 className="text-xl font-bold text-slate-900 mb-4">Evaluation Overview</h2>
+        <p className="text-slate-700 mb-6">
+          This guide helps HR evaluate candidates' system design responses for the Face Recognition Attendance System. 
+          Strong candidates will demonstrate both technical depth and business acumen.
+        </p>
+
+        <div className="grid md:grid-cols-2 gap-6 mt-8">
+          <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-6 border border-blue-200">
+            <h3 className="font-bold text-blue-900 mb-3 flex items-center gap-2">
+              <CheckCircle size={20} className="text-blue-600" />
+              What to Look For
+            </h3>
+            <ul className="space-y-2 text-sm text-blue-900">
+              <li>• Clear system architecture with distinct components</li>
+              <li>• Security and privacy considerations</li>
+              <li>• Scalability and performance thinking</li>
+              <li>• Integration with existing systems</li>
+              <li>• Data flow understanding</li>
+              <li>• Real-world constraints acknowledgment</li>
+            </ul>
+          </div>
+
+          <div className="bg-gradient-to-br from-amber-50 to-amber-100 rounded-lg p-6 border border-amber-200">
+            <h3 className="font-bold text-amber-900 mb-3 flex items-center gap-2">
+              <AlertCircle size={20} className="text-amber-600" />
+              Warning Signs
+            </h3>
+            <ul className="space-y-2 text-sm text-amber-900">
+              <li>• Vague or overly simplistic answers</li>
+              <li>• No mention of security/privacy</li>
+              <li>• Ignoring existing system integration</li>
+              <li>• Unrealistic technology choices</li>
+              <li>• No consideration of scale</li>
+              <li>• Missing business requirements</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-8">
+        <h2 className="text-xl font-bold text-slate-900 mb-4">Expected Components</h2>
+        <p className="text-slate-600 mb-6">Strong candidates should address most of these architectural components:</p>
+        
+        <div className="grid md:grid-cols-3 gap-4">
+          {[
+            { icon: Database, title: 'Data Layer', items: ['Database selection', 'Data retention', 'Backup strategy'] },
+            { icon: Cloud, title: 'Integration Layer', items: ['API design', 'HR/Payroll sync', 'Legacy system connectors'] },
+            { icon: Shield, title: 'Security Layer', items: ['Biometric data encryption', 'Access controls', 'Compliance (GDPR, HIPAA)'] },
+            { icon: Zap, title: 'Processing Layer', items: ['Event capture', 'Business logic', 'Real-time processing'] },
+            { icon: BarChart3, title: 'Analytics Layer', items: ['Reporting engine', 'Dashboard', 'Anomaly detection'] },
+            { icon: Users, title: 'User Interface', items: ['Admin portal', 'Employee self-service', 'Mobile access'] },
+          ].map((component, idx) => {
+            const Icon = component.icon;
+            return (
+              <div key={idx} className="bg-slate-50 rounded-lg p-4 border border-slate-200">
+                <div className="flex items-center gap-2 mb-3">
+                  <Icon size={20} className="text-blue-600" />
+                  <h3 className="font-semibold text-slate-900">{component.title}</h3>
+                </div>
+                <ul className="space-y-1 text-sm text-slate-600">
+                  {component.items.map((item, i) => (
+                    <li key={i}>• {item}</li>
+                  ))}
+                </ul>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const ArchitectureTab = () => {
+  return (
+    <div className="space-y-6">
+      <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-8">
+        <h2 className="text-xl font-bold text-slate-900 mb-4">Reference Architecture Diagram</h2>
+        <p className="text-slate-600 mb-6">
+          This diagram shows a comprehensive system architecture. Candidates don't need to match this exactly, 
+          but should demonstrate similar thinking about components and data flow.
+        </p>
+
+        <div className="bg-slate-50 rounded-lg p-6 border-2 border-slate-200">
+          <pre className="text-xs font-mono text-slate-800 overflow-x-auto whitespace-pre">
+{`┌─────────────────────────────────────────────────────────────────────────────┐
+│                          FACE RECOGNITION DEVICES                            │
+│                    (Existing Access Control System)                          │
+│         Camera 1    Camera 2    Camera 3    ...    Camera N                  │
+└────────────┬────────────────────────────────────────────────┬────────────────┘
+             │                                                 │
+             │ Facial Recognition Events                      │ Device Status
+             │ (Person ID, Timestamp, Location)               │ & Health Data
+             ▼                                                 ▼
+┌────────────────────────────────────────────────────────────────────────────┐
+│                        EVENT INGESTION LAYER                                │
+│  ┌─────────────────┐         ┌──────────────────┐                          │
+│  │  Message Queue  │         │  Event Validator │                          │
+│  │  (Kafka/RabbitMQ)│────────▶│  & Enrichment   │                          │
+│  └─────────────────┘         └──────────────────┘                          │
+└────────────────────────────────────┬───────────────────────────────────────┘
+                                     │
+                    ┌────────────────┴────────────────┐
+                    ▼                                 ▼
+┌───────────────────────────────┐    ┌──────────────────────────────────┐
+│   ATTENDANCE PROCESSING       │    │    REAL-TIME MONITORING          │
+│         ENGINE                │    │                                  │
+│  ┌─────────────────────────┐ │    │  ┌────────────────────────────┐ │
+│  │ Business Rules Engine   │ │    │  │  Dashboard Service         │ │
+│  │ - Check-in/out logic    │ │    │  │  - Live attendance view    │ │
+│  │ - Break detection       │ │    │  │  - Alert notifications     │ │
+│  │ - Shift validation      │ │    │  └────────────────────────────┘ │
+│  │ - Anomaly detection     │ │    │                                  │
+│  └─────────────────────────┘ │    └──────────────────────────────────┘
+└──────────────┬────────────────┘                     │
+               │                                      │
+               ▼                                      ▼
+┌────────────────────────────────────────────────────────────────────────────┐
+│                          DATA PERSISTENCE LAYER                             │
+│  ┌──────────────────────┐  ┌─────────────────────┐  ┌──────────────────┐  │
+│  │  Relational DB       │  │  Time-Series DB     │  │  Data Warehouse  │  │
+│  │  (PostgreSQL/MySQL)  │  │  (InfluxDB/TimescaleDB)│ │  (Snowflake/     │  │
+│  │                      │  │                     │  │   Redshift)      │  │
+│  │  - Employee records  │  │  - Raw events       │  │  - Historical    │  │
+│  │  - Shift schedules   │  │  - Metrics          │  │    analytics     │  │
+│  │  - Policies          │  │  - Device logs      │  │  - Compliance    │  │
+│  └──────────────────────┘  └─────────────────────┘  └──────────────────┘  │
+└────────────────────┬───────────────────────────────────────────────────────┘
+                     │
+                     ▼
+┌────────────────────────────────────────────────────────────────────────────┐
+│                       INTEGRATION & API LAYER                               │
+│  ┌─────────────────┐  ┌──────────────────┐  ┌─────────────────────────┐   │
+│  │  REST API       │  │  GraphQL API     │  │  Webhook Service        │   │
+│  │  - CRUD ops     │  │  - Flexible      │  │  - External triggers    │   │
+│  │  - Batch ops    │  │    queries       │  │  - Event subscriptions  │   │
+│  └─────────────────┘  └──────────────────┘  └─────────────────────────┘   │
+└────────────┬───────────────────────┬──────────────────────────────────────┘
+             │                       │
+             ▼                       ▼
+┌──────────────────────┐    ┌────────────────────────────────────────────┐
+│  EXTERNAL SYSTEMS    │    │       USER INTERFACES                      │
+│                      │    │                                            │
+│  ┌────────────────┐ │    │  ┌──────────────┐    ┌─────────────────┐  │
+│  │ Payroll System │◀┼────┼──│ Admin Portal │    │ Employee Portal │  │
+│  │ (ADP, Workday) │ │    │  │ - Reports    │    │ - Self-service  │  │
+│  └────────────────┘ │    │  │ - Analytics  │    │ - Time cards    │  │
+│                      │    │  │ - Config     │    │ - Requests      │  │
+│  ┌────────────────┐ │    │  └──────────────┘    └─────────────────┘  │
+│  │ HR System      │◀┼────┤                                            │
+│  │ (SAP, Oracle)  │ │    │  ┌──────────────┐    ┌─────────────────┐  │
+│  └────────────────┘ │    │  │ Manager View │    │ Mobile App      │  │
+│                      │    │  │ - Team data  │    │ - Check status  │  │
+│  ┌────────────────┐ │    │  │ - Approvals  │    │ - Notifications │  │
+│  │ Access Control │◀┼────┤  └──────────────┘    └─────────────────┘  │
+│  │ System (Legacy)│ │    │                                            │
+│  └────────────────┘ │    └────────────────────────────────────────────┘
+└──────────────────────┘
+
+┌────────────────────────────────────────────────────────────────────────────┐
+│                     CROSS-CUTTING CONCERNS                                  │
+│                                                                             │
+│  🔒 Security: Encryption at rest/transit, RBAC, Audit logs                 │
+│  📊 Monitoring: Prometheus, Grafana, ELK Stack                             │
+│  🔄 Backup: Automated backups, Disaster recovery, Geographic redundancy    │
+│  📱 Notifications: Email, SMS, Push notifications                          │
+│  ⚖️  Compliance: GDPR, HIPAA, SOC2, Data retention policies               │
+└────────────────────────────────────────────────────────────────────────────┘`}
+          </pre>
+        </div>
+      </div>
+
+      <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-8">
+        <h2 className="text-xl font-bold text-slate-900 mb-4">Key Data Flows</h2>
+        <div className="space-y-4">
+          {[
+            {
+              title: 'Attendance Event Flow',
+              steps: [
+                'Face recognized at door → Event generated',
+                'Event published to message queue',
+                'Business rules engine processes event',
+                'Attendance record created/updated in database',
+                'Real-time dashboard updated',
+                'Notifications sent if needed'
+              ]
+            },
+            {
+              title: 'Payroll Integration Flow',
+              steps: [
+                'End of pay period trigger',
+                'Attendance data aggregated by employee',
+                'Business rules applied (overtime, breaks, etc.)',
+                'Data formatted for payroll system',
+                'Secure transfer to payroll via API',
+                'Reconciliation and audit trail'
+              ]
+            },
+            {
+              title: 'Analytics & Reporting Flow',
+              steps: [
+                'Historical data extracted from databases',
+                'ETL process loads data warehouse',
+                'Analytics engine processes data',
+                'Reports generated on schedule',
+                'Dashboards updated with insights',
+                'Managers receive automated reports'
+              ]
+            }
+          ].map((flow, idx) => (
+            <div key={idx} className="bg-slate-50 rounded-lg p-6 border border-slate-200">
+              <h3 className="font-semibold text-slate-900 mb-3">{flow.title}</h3>
+              <div className="space-y-2">
+                {flow.steps.map((step, i) => (
+                  <div key={i} className="flex items-center gap-3 text-sm text-slate-700">
+                    <span className="bg-blue-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">
+                      {i + 1}
+                    </span>
+                    <span>{step}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const RubricTab = () => {
+  const criteria = [
+    {
+      category: 'System Architecture',
+      weight: '30%',
+      levels: [
+        { score: '5', desc: 'Comprehensive architecture with all major components clearly defined and connected. Shows understanding of layers, separation of concerns, and scalability.' },
+        { score: '4', desc: 'Solid architecture covering most components. Minor gaps in some areas but overall structure is sound.' },
+        { score: '3', desc: 'Basic architecture outlined. Missing some key components or unclear how pieces connect.' },
+        { score: '2', desc: 'Incomplete architecture. Major components missing or poorly defined.' },
+        { score: '1', desc: 'Minimal or no architectural thinking. Just lists technologies without structure.' },
+      ]
+    },
+    {
+      category: 'Integration & Data Flow',
+      weight: '20%',
+      levels: [
+        { score: '5', desc: 'Clear explanation of how data flows through system. Addresses integration with existing access control, HR, and payroll systems with specific approaches.' },
+        { score: '4', desc: 'Good understanding of integration needs. Describes main data flows and integration points.' },
+        { score: '3', desc: 'Basic mention of integrations. Limited detail on how data moves between systems.' },
+        { score: '2', desc: 'Vague about integrations. May ignore existing system constraints.' },
+        { score: '1', desc: 'No integration strategy. Treats as isolated system.' },
+      ]
+    },
+    {
+      category: 'Security & Privacy',
+      weight: '20%',
+      levels: [
+        { score: '5', desc: 'Comprehensive security approach covering biometric data encryption, access controls, audit trails, and compliance (GDPR, HIPAA, etc.). Understands sensitivity of biometric data.' },
+        { score: '4', desc: 'Good security awareness. Covers main concerns like encryption and access controls.' },
+        { score: '3', desc: 'Mentions security but lacks depth. May miss biometric-specific concerns.' },
+        { score: '2', desc: 'Minimal security consideration. May only mention general security without specifics.' },
+        { score: '1', desc: 'Security not addressed or treated as afterthought.' },
+      ]
+    },
+    {
+      category: 'Scalability & Performance',
+      weight: '15%',
+      levels: [
+        { score: '5', desc: 'Discusses horizontal scaling, load balancing, caching strategies, and database optimization. Considers growth scenarios.' },
+        { score: '4', desc: 'Addresses scalability with specific approaches. Considers performance implications.' },
+        { score: '3', desc: 'Mentions scalability but lacks concrete strategies.' },
+        { score: '2', desc: 'Minimal discussion of scale or performance.' },
+        { score: '1', desc: 'No consideration of scalability.' },
+      ]
+    },
+    {
+      category: 'Business Requirements',
+      weight: '15%',
+      levels: [
+        { score: '5', desc: 'Addresses all key requirements: attendance capture, reporting, analytics, payroll integration. Shows understanding of business value and user needs.' },
+        { score: '4', desc: 'Covers most business requirements with practical solutions.' },
+        { score: '3', desc: 'Addresses some requirements but misses important aspects.' },
+        { score: '2', desc: 'Limited alignment with stated business needs.' },
+        { score: '1', desc: 'Ignores business requirements or focuses only on technical aspects.' },
+      ]
+    }
+  ];
+
+  return (
+    <div className="space-y-6">
+      <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-8">
+        <h2 className="text-xl font-bold text-slate-900 mb-4">Scoring Rubric</h2>
+        <p className="text-slate-600 mb-6">
+          Rate each category on a scale of 1-5. Multiply by the weight to get the weighted score. Total possible: 5.0
+        </p>
+
+        <div className="space-y-8">
+          {criteria.map((item, idx) => (
+            <div key={idx} className="border-b border-slate-200 pb-8 last:border-0">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-bold text-slate-900">{item.category}</h3>
+                <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-semibold">
+                  Weight: {item.weight}
+                </span>
+              </div>
+
+              <div className="space-y-3">
+                {item.levels.map((level, i) => (
+                  <div key={i} className="bg-slate-50 rounded-lg p-4 border border-slate-200">
+                    <div className="flex items-start gap-3">
+                      <div className={`w-10 h-10 rounded-lg flex items-center justify-center font-bold text-lg flex-shrink-0 ${
+                        level.score === '5' ? 'bg-green-100 text-green-800' :
+                        level.score === '4' ? 'bg-blue-100 text-blue-800' :
+                        level.score === '3' ? 'bg-yellow-100 text-yellow-800' :
+                        level.score === '2' ? 'bg-orange-100 text-orange-800' :
+                        'bg-red-100 text-red-800'
+                      }`}>
+                        {level.score}
+                      </div>
+                      <p className="text-sm text-slate-700 mt-2">{level.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl shadow-sm border border-blue-200 p-8">
+        <h3 className="text-lg font-bold text-blue-900 mb-4">Overall Scoring Guidelines</h3>
+        <div className="grid md:grid-cols-3 gap-4">
+          <div className="bg-white rounded-lg p-4 border border-blue-200">
+            <div className="text-2xl font-bold text-green-600 mb-2">4.0 - 5.0</div>
+            <div className="font-semibold text-slate-900 mb-2">Strong Hire</div>
+            <p className="text-sm text-slate-600">Demonstrates excellent system design skills. Ready for senior technical roles.</p>
+          </div>
+          <div className="bg-white rounded-lg p-4 border border-blue-200">
+            <div className="text-2xl font-bold text-blue-600 mb-2">3.0 - 3.9</div>
+            <div className="font-semibold text-slate-900 mb-2">Hire</div>
+            <p className="text-sm text-slate-600">Solid technical foundation. Good fit for mid-level roles with room to grow.</p>
+          </div>
+          <div className="bg-white rounded-lg p-4 border border-blue-200">
+            <div className="text-2xl font-bold text-orange-600 mb-2">Below 3.0</div>
+            <div className="font-semibold text-slate-900 mb-2">No Hire</div>
+            <p className="text-sm text-slate-600">Insufficient system design capabilities for the role requirements.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const RedFlagsTab = () => {
+  const redFlags = [
+    {
+      category: '🚨 Critical Red Flags',
+      color: 'red',
+      items: [
+        { issue: 'No mention of security or privacy', why: 'Biometric data is highly sensitive. This shows lack of awareness of regulatory and ethical concerns.' },
+        { issue: 'Ignores existing systems entirely', why: 'Question explicitly mentions existing face recognition system. Must integrate, not replace.' },
+        { issue: 'Stores biometric templates in plaintext', why: 'Major security vulnerability. Shows lack of basic security knowledge.' },
+        { issue: 'No consideration of data compliance (GDPR, HIPAA)', why: 'Legal requirement for handling personal data, especially in healthcare.' },
+      ]
+    },
+    {
+      category: '⚠️ Significant Concerns',
+      color: 'orange',
+      items: [
+        { issue: 'Overly complex "resume buzzwords" solution', why: 'Using blockchain, AI/ML, microservices without justification shows lack of pragmatism.' },
+        { issue: 'No database strategy or data model', why: 'Core technical component. Vague answers suggest shallow understanding.' },
+        { issue: 'Missing error handling or edge cases', why: 'Real systems must handle failures. No mention suggests inexperience.' },
+        { issue: 'No scalability consideration', why: 'System needs to grow with organization. Must think beyond immediate needs.' },
+        { issue: 'Unrealistic timeline estimates', why: 'Shows lack of experience with real-world implementation complexity.' },
+      ]
+    },
+    {
+      category: '⚡ Minor Concerns',
+      color: 'yellow',
+      items: [
+        { issue: 'Vague about specific technologies', why: 'While being tool-agnostic is fine, should explain trade-offs of different approaches.' },
+        { issue: 'Limited discussion of user experience', why: 'End users (employees, managers, admins) are important stakeholders.' },
+        { issue: 'No monitoring or observability', why: 'Production systems need visibility. Omission suggests limited ops experience.' },
+        { issue: 'Doesn\'t ask clarifying questions', why: 'Real design involves gathering requirements. Total silence may indicate inexperience.' },
+      ]
+    }
+  ];
+
+  const greenFlags = [
+    { item: 'Asks clarifying questions about scale, users, and constraints', icon: '✓' },
+    { item: 'Discusses trade-offs between different approaches', icon: '✓' },
+    { item: 'Mentions specific technologies but explains why', icon: '✓' },
+    { item: 'Considers operational aspects (monitoring, deployment)', icon: '✓' },
+    { item: 'Addresses both technical and business requirements', icon: '✓' },
+    { item: 'Shows awareness of real-world constraints (budget, time, existing systems)', icon: '✓' },
+    { item: 'Discusses testing strategy or quality assurance', icon: '✓' },
+    { item: 'Considers data lifecycle (retention, archival, deletion)', icon: '✓' },
+  ];
+
+  return (
+    <div className="space-y-6">
+      {redFlags.map((section, idx) => (
+        <div key={idx} className="bg-white rounded-xl shadow-sm border border-slate-200 p-8">
+          <h2 className="text-xl font-bold text-slate-900 mb-6">{section.category}</h2>
+          <div className="space-y-4">
+            {section.items.map((flag, i) => (
+              <div key={i} className={`border-l-4 rounded-lg p-4 ${
+                section.color === 'red' ? 'bg-red-50 border-red-500' :
+                section.color === 'orange' ? 'bg-orange-50 border-orange-500' :
+                'bg-yellow-50 border-yellow-500'
+              }`}>
+                <h3 className={`font-bold mb-2 ${
+                  section.color === 'red' ? 'text-red-900' :
+                  section.color === 'orange' ? 'text-orange-900' :
+                  'text-yellow-900'
+                }`}>
+                  {flag.issue}
+                </h3>
+                <p className={`text-sm ${
+                  section.color === 'red' ? 'text-red-800' :
+                  section.color === 'orange' ? 'text-orange-800' :
+                  'text-yellow-800'
+                }`}>
+                  <span className="font-semibold">Why it matters:</span> {flag.why}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
+
+      <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl shadow-sm border border-green-200 p-8">
+        <h2 className="text-xl font-bold text-green-900 mb-4">✨ Positive Indicators (Green Flags)</h2>
+        <p className="text-green-800 mb-6">Look for these signs of strong system design thinking:</p>
+        <div className="grid md:grid-cols-2 gap-3">
+          {greenFlags.map((flag, idx) => (
+            <div key={idx} className="bg-white rounded-lg p-4 border border-green-200 flex items-start gap-3">
+              <span className="text-2xl text-green-600">{flag.icon}</span>
+              <span className="text-sm text-slate-700 mt-1">{flag.item}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default EvaluationGuide;

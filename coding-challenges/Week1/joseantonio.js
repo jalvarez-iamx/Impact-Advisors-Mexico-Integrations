@@ -283,7 +283,7 @@
                     floor: floor,
                     direction: 'up',
                     wait: waitTime,
-                    urgency: waitTime / 13 // Urgency scales with wait time (13s = 1.0)
+                    urgency: waitTime / 10// Urgency scales with wait time (10 = 1.0)
                 });
             }
             // Collect all pending down calls
@@ -294,7 +294,7 @@
                     floor: floor,
                     direction: 'down',
                     wait: waitTime,
-                    urgency: waitTime / 13
+                    urgency: waitTime / 10
                 });
             }
 
